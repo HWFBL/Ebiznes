@@ -32,4 +32,3 @@ class CategoryRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(im
     category.result
   }
 }
-

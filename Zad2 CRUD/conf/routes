@@ -4,20 +4,72 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
-GET     /addproduct                 controllers.HomeController.addProduct
-POST    /addproducthandle           controllers.HomeController.addProductHandle
-GET     /updateproduct/:id          controllers.HomeController.updateProduct(id: Long)
-POST    /updateproducthandle        controllers.HomeController.updateProductHandle
-
-GET     /products                   controllers.HomeController.getProducts
-GET     /product/:id                controllers.HomeController.getProduct(id: Long)
-GET     /delete/:id                 controllers.HomeController.delete(id: Long)
+GET           /                            controllers.HomeController.index
 # An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
+GET           /count                       controllers.CountController.count
 # An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+GET           /message                     controllers.AsyncController.message
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET           /assets/*file                controllers.Assets.versioned(path="/public", file: Asset)
 
+GET           /hello                       controllers.HomeController.hello(name: String)
+
+
+
+GET           /category                    controllers.CategoryController.getAll
+GET           /category/:categoryId        controllers.CategoryController.get(categoryId: String)
+POST          /category                    controllers.CategoryController.add
+PUT           /category/:categoryId        controllers.CategoryController.update(categoryId: String)
+DELETE        /category/:categoryId        controllers.CategoryController.delete(categoryId: String)
+
+
+POST          /comments                    controllers.CommentController.create
+PUT           /comments/:commentId         controllers.CommentController.update(commentId: String)
+DELETE        /comments/:commentId         controllers.CommentController.delete(commentId: String)
+
+
+POST          /ratings                     controllers.RatingController.add
+PUT           /ratings/:ratingId           controllers.CommentController.update(ratingId: String)
+DELETE        /ratings/:ratingId           controllers.CommentController.delete(ratingId: String)
+
+
+GET           /product                     controllers.ProductController.getAll
+GET           /product/:productId          controllers.ProductController.get(productId: String)
+POST          /product                     controllers.ProductController.add
+PUT           /product/:productId          controllers.ProductController.update(productId: String)
+DELETE        /product/:productId          controllers.ProductController.delete(productId: String)
+
+GET           /users                       controllers.UserController.getAll
+GET           /users/:userId               controllers.UserController.get(userId: String)
+POST          /users                       controllers.UserController.add
+PUT           /users/:userId               controllers.UserController.update(userId: String)
+DELETE        /users/:userId               controllers.UserController.delete(userId: String)
+
+GET           /shipping                    controllers.ShippingController.getAll
+GET           /shipping/:shippingId        controllers.ShippingController.get(shippingId: String)
+POST          /shipping                    controllers.ShippingController.add
+PUT           /shipping/:shippingId        controllers.ShippingController.update(shippingId: String)
+DELETE        /shipping/:shippingId        controllers.ShippingController.delete(shippingId: String)
+
+GET           /genres                      controllers.OpinionController.getAll
+GET           /genres/:genreId             controllers.OpinionController.get(genreId: String)
+POST          /genres                      controllers.OpinionController.add
+PUT           /genres/:genreId             controllers.OpinionController.update(genreId: String)
+DELETE        /genres/:genreId             controllers.OpinionController.delete(genreId: String)
+
+GET           /orders/:userId              controllers.OrderController.get(userId: String)
+POST          /orders                      controllers.OrderController.add
+PUT           /orders/:orderId             controllers.OrderController.update(orderId: String)
+DELETE        /orders/:orderId             controllers.OrderController.delete(orderId: String)
+
+GET           /cart                        controllers.CartController.getAll
+GET           /cart/:cartId                controllers.CartController.get(cartId: String)
+POST          /cart/                       controllers.CartController.add
+DELETE        /cart/:cartId                controllers.CartController.delete(cartId: String)
+
+
+GET           /payments                    controllers.PaymentController.getAll
+POST          /payment                     controllers.PaymentController.add
+PUT           /payment/:paymentId          controllers.PaymentController.update(paymentId: String)
+DELETE        /payment/:paymentId          controllers.PaymentController.delete(paymentId: String)

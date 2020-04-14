@@ -3,9 +3,9 @@ package controllers
 import javax.inject.Inject
 import play.api.mvc.{AbstractController, ControllerComponents}
 
-class ProductController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class CategoryController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
-  def get(prodId: String) = Action {
+  def get(categoryId: String) = Action {
     Ok("")
   }
 
@@ -17,11 +17,11 @@ class ProductController @Inject()(cc: ControllerComponents) extends AbstractCont
     Ok("")
   }
 
-  def delete(prodId: String) = Action {
+  def delete(categoryId: String) = Action {
     Ok("")
   }
 
-  def update(prodId: String) = Action {
+  def update(categoryId: String) = Action {
     Ok("")
   }
 

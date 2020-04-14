@@ -15,13 +15,10 @@ class ProductRepository @Inject() (dbConfigProvider: DatabaseConfigProvider, cat
 
   private class ProductTable(tag: Tag) extends Table[Product](tag, "product") {
 
-    /** The ID column, which is the primary key, and auto incremented */
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-    /** The name column */
     def name = column[String]("name")
 
-    /** The age column */
     def description = column[String]("description")
 
     def category = column[Int]("category")
@@ -29,21 +26,11 @@ class ProductRepository @Inject() (dbConfigProvider: DatabaseConfigProvider, cat
     def category_fk = foreignKey("cat_fk",category, cat)(_.id)
 
 
-    /**
-     * This is the tables default "projection".
-     *
-     * It defines how the columns are converted to and from the Person object.
-     *
-     * In this case, we are simply passing the id, name and page parameters to the Person case classes
-     * apply and unapply methods.
-     */
     def * = (id, name, description, category) <> ((Product.apply _).tupled, Product.unapply)
 
   }
 
-  /**
-   * The starting point for all queries on the people table.
-   */
+
 
   import categoryRepository.CategoryTable
 
@@ -52,12 +39,6 @@ class ProductRepository @Inject() (dbConfigProvider: DatabaseConfigProvider, cat
   private val cat = TableQuery[CategoryTable]
 
 
-  /**
-   * Create a person with the given name and age.
-   *
-   * This is an asynchronous operation, it will return a future of the created person, which can be used to obtain the
-   * id for that person.
-   */
   def create(name: String, description: String, category: Int): Future[Product] = db.run {
     // We create a projection of just the name and age columns, since we're not inserting a value for the id column
     (product.map(p => (p.name, p.description,p.category))
@@ -70,9 +51,6 @@ class ProductRepository @Inject() (dbConfigProvider: DatabaseConfigProvider, cat
       ) += (name, description,category)
   }
 
-  /**
-   * List all the people in the database.
-   */
   def list(): Future[Seq[Product]] = db.run {
     product.result
   }
@@ -101,4 +79,3 @@ class ProductRepository @Inject() (dbConfigProvider: DatabaseConfigProvider, cat
   }
 
 }
-
