@@ -1,28 +1,35 @@
 package controllers
 
 import javax.inject.Inject
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
+import repositories.OrderRepository
 
-class OrderController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+import scala.concurrent.ExecutionContext
 
-  def get(orderId: String) = Action {
-    Ok("")
-  }
-
-  def getAll = Action {
-    Ok("")
-  }
-
+class OrderController @Inject() (orderRepository: OrderRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc){
   def add = Action {
     Ok("")
   }
 
-  def delete(orderId: String) = Action {
+  def delete(ratingId: Long) = Action {
     Ok("")
   }
 
-  def update(orderId: String) = Action {
+  def update(ratingId: Long) = Action {
     Ok("")
   }
 
+  def getAll = Action.async {
+    implicit request =>
+      val ord = orderRepository.list
+      ord.map(orders => Ok(views.html.orders(orders)))
+  }
+
+  def get(id: Long) = Action.async { implicit request =>
+    val ord = orderRepository.getByIdOption(id)
+    ord.map(order => order match {
+      case Some(c) => Ok(views.html.order(c))
+      case None => Redirect(routes.OrderController.getAll)
+    })
+  }
 }

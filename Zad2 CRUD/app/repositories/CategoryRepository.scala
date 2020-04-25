@@ -1,6 +1,7 @@
-package models
+package repositories
 
 import javax.inject.{Inject, Singleton}
+import models.Category
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
@@ -32,3 +33,4 @@ class CategoryRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(im
     category.result
   }
 }
+
