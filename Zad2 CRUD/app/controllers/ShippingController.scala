@@ -7,7 +7,7 @@ import repositories.ShippingRepository
 import scala.concurrent.ExecutionContext
 
 class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc){
-  def add = Action.async {
+  def add = Action {
     Ok("")
   }
 
@@ -15,14 +15,14 @@ class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: M
     Ok("")
   }
 
-  def update(ratingId: Long) = Action.async {
+  def update(ratingId: Long) = Action {
     Ok("")
   }
 
   def getAll = Action.async {
     implicit request =>
       val ship = shippingRepository.list()
-      ship.map(shipping => Ok(views.html.shippings))
+      ship.map(shipping => Ok(views.html.shippings(shipping)))
   }
 
   def get(id: Long) = Action.async { implicit request =>

@@ -23,10 +23,10 @@ class CustomerController @Inject()(customerRepo: CustomerRepository, cc: Message
   val updateCustomerForm: Form[UpdateCustomerForm] = Form {
     mapping(
       "id" -> longNumber,
+      "forename" -> nonEmptyText,
       "name" -> nonEmptyText,
-      "description" -> nonEmptyText,
-      "category" -> number,
-    )(UpdateProductForm.apply)(UpdateProductForm.unapply)
+      "email" -> nonEmptyText,
+    )(UpdateCustomerForm.apply)(UpdateCustomerForm.unapply)
   }
 
   def getCustomers = Action.async {
@@ -39,7 +39,7 @@ class CustomerController @Inject()(customerRepo: CustomerRepository, cc: Message
     val customer = customerRepo.getByIdOption(id)
     customer.map(customer => customer match {
       case Some(c) => Ok(views.html.customer(c))
-      case None => Redirect(routes.)
+      case None => Redirect(routes.CustomerController.getCustomers())
     })
   }
 
@@ -48,12 +48,12 @@ class CustomerController @Inject()(customerRepo: CustomerRepository, cc: Message
     Redirect("/customers")
   }
 
-  def update(id: Long) = Action.async {
+  def update(id: Long) = Action {
     Ok("")
   }
 
 
-  def add() = Action.async {
+  def add() = Action {
     Ok("")
   }
 }

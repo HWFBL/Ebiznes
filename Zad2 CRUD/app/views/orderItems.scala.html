@@ -1,5 +1,8 @@
-@(orderItem: Seq[OrderItem])
+@(orderItems: Seq[OrderItem])
 
-<li>
-    <b> @orderItem.id </b>
-</li>
+    @for(orderItem <- orderItems) {
+        <b>@orderItem.id</b>
+
+        <a href="@controllers.routes.OrderItemController.update(orderItem.id)">Edit</a>
+        <a href="@controllers.routes.OrderItemController.delete(orderItem.id)">Delete</a>
+    }

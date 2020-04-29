@@ -5,6 +5,7 @@ import models.{Category, Product}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
+import play.api.data.format.Formats._
 import repositories.{CategoryRepository, ProductRepository}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -21,6 +22,10 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
       "name" -> nonEmptyText,
       "description" -> nonEmptyText,
       "category" -> number,
+      "price" -> of(doubleFormat),
+      "quantity" -> number,
+      "rating" -> longNumber,
+      "photo" -> longNumber
     )(CreateProductForm.apply)(CreateProductForm.unapply)
   }
 
@@ -30,6 +35,10 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
       "name" -> nonEmptyText,
       "description" -> nonEmptyText,
       "category" -> number,
+      "price" -> of(doubleFormat),
+      "quantity" -> number,
+      "rating" -> longNumber,
+      "photo" -> longNumber
     )(UpdateProductForm.apply)(UpdateProductForm.unapply)
   }
 
@@ -64,7 +73,7 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
 
     val produkt = productsRepo.getById(id)
     produkt.map(product => {
-      val prodForm = updateProductForm.fill(UpdateProductForm(product.id, product.name, product.description,product.category))
+      val prodForm = updateProductForm.fill(UpdateProductForm(product.id, product.name, product.description,product.category, product.price, product.quantity, product.rating, product.photo))
       //  id, product.name, product.description, product.category)
       //updateProductForm.fill(prodForm)
       Ok(views.html.productupdate(prodForm, categ))
@@ -85,7 +94,8 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
         )
       },
       product => {
-        productsRepo.update(product.id, Product(product.id, product.name, product.description, product.category, product.price, product.quantity, )).map { _ =>
+        productsRepo.update(product.id, Product(product.id, product.name, product.description, product.category, product.price, product.quantity, product.rating
+        , product.photo)).map { _ =>
           Redirect(routes.HomeController.updateProduct(product.id)).flashing("success" -> "product updated")
         }
       }
@@ -113,7 +123,7 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
         )
       },
       product => {
-        productsRepo.create(product.name, product.description, product.category).map { _ =>
+        productsRepo.create(product.name, product.description, product.category, product.price, product.quantity, product.rating, product.photo).map { _ =>
           Redirect(routes.HomeController.addProduct()).flashing("success" -> "product.created")
         }
       }
@@ -149,5 +159,5 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
   */
 }
 
-case class CreateProductForm(name: String, description: String, category: Int)
-case class UpdateProductForm(id: Long, name: String, description: String, category: Int)
+case class CreateProductForm(name: String, description: String, category: Int, price: Double, quantity: Int, rating: Long, photo: Long)
+case class UpdateProductForm(id: Long, name: String, description: String, category: Int,  price: Double, quantity: Int, rating: Long, photo: Long)

@@ -14,7 +14,7 @@ class CommentRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
   import dbConfig._
   import profile.api._
 
-  class CommentTable(tag: Tag) extends Table[Comment](tag, "comment") {
+   class CommentTable(tag: Tag) extends Table[Comment](tag, "comment") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
     def content = column[String]("content")
@@ -24,12 +24,12 @@ class CommentRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
 
   val comment = TableQuery[CommentTable]
   
-  def create(content: String): Future[Long] = db.run {
-    (comment returning comment.map(_.id)) += Comment(0, content)
-//    (comment.map(c => (c.content))
-//      returning comment.map(_.id)
-//      into ((content, id) => Comment(id, content))
-//      ) += (content)
+  def create(content: String): Future[Comment] = db.run {
+//    (comment returning comment.map(_.id)) += Comment(0, content)
+    (comment.map(c => (c.content))
+      returning comment.map(_.id)
+      into ((content, id) => Comment(id, content))
+      ) += (content)
   }
 
   def list: Future[Seq[Comment]] = db.run {
@@ -37,10 +37,10 @@ class CommentRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
   }
 
   def getById(id: Long): Future[Comment] = db.run {
-    comment.filter(_.id == id).result.head
+    comment.filter(_.id === id).result.head
   }
 
   def getByIdOption(id: Long): Future[Option[Comment]] = db.run {
-    comment.filter(_.id == id).result.headOption
+    comment.filter(_.id === id).result.headOption
   }
 }

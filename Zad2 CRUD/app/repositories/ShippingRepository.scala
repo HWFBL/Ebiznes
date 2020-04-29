@@ -8,7 +8,7 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShippingRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
-  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+   val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
@@ -38,10 +38,10 @@ class ShippingRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider)(im
   }
 
   def getById(id: Long): Future[Shipping] = db.run {
-    shipping.filter(_.id == id).result.head
+    shipping.filter(_.id === id).result.head
   }
 
   def getByIdOption(id: Long): Future[Option[Shipping]] = db.run {
-    shipping.filter(_.id == id).result.headOption
+    shipping.filter(_.id === id).result.headOption
   }
 }

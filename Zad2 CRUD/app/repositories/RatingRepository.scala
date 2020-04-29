@@ -8,7 +8,7 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RatingRepository @Inject() (dbConfigProvider: DatabaseConfigProvider, customerRepository: CustomerRepository)(implicit ec: ExecutionContext){
-  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+   val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
@@ -24,8 +24,8 @@ class RatingRepository @Inject() (dbConfigProvider: DatabaseConfigProvider, cust
 
   import customerRepository.CustomerTable
 
-  private val cust = TableQuery[CustomerTable]
-  private val rating = TableQuery[RatingTable]
+  val cust = TableQuery[CustomerTable]
+   val rating = TableQuery[RatingTable]
 
   def create(customer_id: Long, value: Int): Future[Rating] = db.run {
     (rating.map(r => (r.customer_id, r.value))
@@ -36,11 +36,11 @@ class RatingRepository @Inject() (dbConfigProvider: DatabaseConfigProvider, cust
   }
 
   def getById(id: Long): Future[Rating] = db.run {
-    rating.filter(_.id == id).result.head
+    rating.filter(_.id === id).result.head
   }
 
   def getByIdOption(id: Long): Future[Option[Rating]] = db.run {
-    rating.filter(_.id == id).result.headOption
+    rating.filter(_.id === id).result.headOption
   }
 
   def list(): Future[Seq[Rating]] = db.run {

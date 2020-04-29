@@ -9,13 +9,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ProductRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, categoryRepository: CategoryRepository, ratingRepository: RatingRepository, photoRepository: PhotoRepository)(implicit ec: ExecutionContext) {
-  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+  val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
 
 
-  class ProductTable(tag: Tag) extends Table[Product](tag, "product") {
+   class ProductTable(tag: Tag) extends Table[Product](tag, "product") {
 
     /** The ID column, which is the primary key, and auto incremented */
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -64,13 +64,10 @@ class ProductRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, cate
   import photoRepository.PhotoTable
 
 
-  private val rat = TableQuery[RatingTable]
-
-  private val product = TableQuery[ProductTable]
-
-  private val cat = TableQuery[CategoryTable]
-
-  private val ph = TableQuery[PhotoTable]
+   val rat = TableQuery[RatingTable]
+   val product = TableQuery[ProductTable]
+   val cat = TableQuery[CategoryTable]
+   val ph = TableQuery[PhotoTable]
 
 
   /**

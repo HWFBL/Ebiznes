@@ -9,7 +9,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomerRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
-  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+  val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
@@ -36,11 +36,11 @@ class CustomerRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider)(im
   }
 
   def getByIdOption(id: Long): Future[Option[Customer]] = db.run {
-    customer.filter(_.id == id).result.headOption
+    customer.filter(_.id === id).result.headOption
   }
 
   def getById(id: Long): Future[Customer] = db.run {
-    customer.filter(_.id == id).result.head
+    customer.filter(_.id === id).result.head
   }
 
   def list(): Future[Seq[Customer]] = db.run {

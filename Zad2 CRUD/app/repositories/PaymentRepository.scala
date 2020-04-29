@@ -11,7 +11,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
-  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+    val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
@@ -28,22 +28,22 @@ class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impl
     def * = (id, total_price, date, is_done) <> ((Payment.apply _).tupled, Payment.unapply)
   }
 
-  private val payment = TableQuery[PaymentTable]
+   val payment = TableQuery[PaymentTable]
 
-  def create(total_price: Double, date: LocalDate, is_done: Int) = db.run {
-    (payment.map(u => (u.total_price, u.date, u.is_done, ))
+  def create(total_price: Double, date: LocalDate, is_done: Int): Future[Payment] = db.run {
+    (payment.map(u => (u.total_price, u.date, u.is_done))
       returning payment.map(_.id)
 
-      into { case ((total_price, date, is_done, ), id) => Payment(id, total_price, date, is_done) }
+      into { case ((total_price, date, is_done), id) => Payment(id, total_price, date, is_done) }
       ) += (total_price, date, is_done)
   }
 
   def getById(id: Long): Future[Payment] = db.run {
-    payment.filter(_.id == id).result.head
+    payment.filter(_.id === id).result.head
   }
 
   def getByIdOption(id: Long): Future[Option[Payment]] = db.run {
-    payment.filter(_.id == id).result.headOption
+    payment.filter(_.id === id).result.headOption
   }
 
   def list(): Future[Seq[Payment]] = db.run {

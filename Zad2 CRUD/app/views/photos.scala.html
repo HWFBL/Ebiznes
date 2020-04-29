@@ -1,6 +1,8 @@
-@(photo: Photo)
+@(photos: Seq[Photo])
 
-<li>
-    <b> @photo.id </b>
-
-</li>
+    @for(photo <- photos) {
+        <b>@photo.id</b>
+        @photo.photo
+        <a href="@controllers.routes.PhotoController.update(photo.id)">Edit</a>
+        <a href="@controllers.routes.PhotoController.delete(photo.id)">Delete</a>
+    }

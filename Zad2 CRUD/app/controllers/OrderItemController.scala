@@ -21,7 +21,7 @@ class OrderItemController @Inject()(orderItemRepository: OrderItemRepository, cc
 
   def getAll = Action.async {
     implicit request =>
-      val ord_it = orderItemRepository.list
+      val ord_it = orderItemRepository.list()
       ord_it.map(orders => Ok(views.html.orderItems(orders)))
   }
 

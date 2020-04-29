@@ -11,18 +11,18 @@ class PhotoController @Inject() (photoRepository: PhotoRepository, cc: MessagesC
     Ok("")
   }
 
-  def delete(ratingId: Long) = Action {
+  def delete(photoId: Long) = Action {
     Ok("")
   }
 
-  def update(ratingId: Long) = Action {
+  def update(photoId: Long) = Action {
     Ok("")
   }
 
   def getAll = Action.async {
     implicit request =>
       val foto = photoRepository.list
-      foto.map(photo => Ok(views.html.photos))
+      foto.map(photo => Ok(views.html.photos(photo)))
   }
 
   def get(id: Long) = Action.async {implicit request =>

@@ -1,6 +1,8 @@
-@(rating: Rating)
+@(ratings: Seq[Rating])
 
-<li>
-    <b> @rating.value </b>
-
-</li>
+    @for(rating <- ratings) {
+        <b>@rating.id</b>
+        @rating.value
+        <a href="@controllers.routes.RatingController.update(rating.id)">Edit</a>
+        <a href="@controllers.routes.RatingController.delete(rating.id)">Delete</a>
+    }

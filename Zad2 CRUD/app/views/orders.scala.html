@@ -1,0 +1,9 @@
+@(orders: Seq[Order])
+
+@for(order <- orders) {
+    <b>@order.customer</b>
+    @order.product
+    @order.shipping
+    <a href="@controllers.routes.OrderController.update(order.id)">Edit</a>
+    <a href="@controllers.routes.OrderController.delete(order.id)">Delete</a>
+}

@@ -1,6 +1,7 @@
-@(payment: Payment)
+@(payments: Seq[Payment])
 
-<li>
-    <b> @payment.id </b>
-
-</li>
+    @for(payment <- payments) {
+        <b>@payment.total_price</b>
+        @payment.is_done
+        @payment.date
+    }

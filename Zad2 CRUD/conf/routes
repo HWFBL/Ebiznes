@@ -70,5 +70,5 @@ DELETE        /payment/:paymentId             controllers.PaymentController.dele
 GET           /photo                          controllers.PhotoController.getAll
 GET           /photo/:photoId                 controllers.PhotoController.get(photoId: Long)
 POST          /photo                          controllers.PhotoController.add
-PUT           /photo:photoId                  controllers.PhotoController.update(photoId: Long)
-DELETE        /photo:phototId                 controllers.PhotoController.delete(photoId: Long)
+PUT           /photo/:photoId                 controllers.PhotoController.update(photoId: Long)
+DELETE        /photo/:photoId                controllers.PhotoController.delete(photoId: Long)
