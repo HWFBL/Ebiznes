@@ -1,9 +1,10 @@
 package repositories
 
+import java.sql.Date
 import java.time.LocalDate
 
 import javax.inject.{Inject, Singleton}
-import models.Payment
+import models._
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
@@ -16,21 +17,10 @@ class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impl
   import dbConfig._
   import profile.api._
 
-  class PaymentTable(tag: Tag) extends Table[Payment](tag, "payment") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-
-    def total_price = column[Double]("total_price")
-
-    def date = column[LocalDate]("date")
-
-    def is_done = column[Int]("is_done")
-
-    def * = (id, total_price, date, is_done) <> ((Payment.apply _).tupled, Payment.unapply)
-  }
 
    val payment = TableQuery[PaymentTable]
 
-  def create(total_price: Double, date: LocalDate, is_done: Int): Future[Payment] = db.run {
+  def create(total_price: Double, date: Date, is_done: Int): Future[Payment] = db.run {
     (payment.map(u => (u.total_price, u.date, u.is_done))
       returning payment.map(_.id)
 
@@ -49,4 +39,12 @@ class PaymentRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impl
   def list(): Future[Seq[Payment]] = db.run {
     payment.result
   }
+
+  def update(id: Long, new_payment: Payment): Future[Unit] = {
+    val paymentToUpdate: Payment = new_payment.copy(id)
+    db.run(payment.filter(_.id === id).update(paymentToUpdate)).map(_ => ())
+  }
+
+  def delete(id: Long): Future[Unit] = db.run(payment.filter(_.id === id).delete).map(_ => ())
+
 }

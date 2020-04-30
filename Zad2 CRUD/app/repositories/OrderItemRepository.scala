@@ -1,7 +1,7 @@
 package repositories
 
 import javax.inject.{Inject, Singleton}
-import models.OrderItem
+import models._
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
@@ -12,26 +12,7 @@ class OrderItemRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider, o
 
   import dbConfig._
   import profile.api._
-  
-   class OrderItemTable(tag: Tag) extends Table[OrderItem](tag, "orderItem") {
-     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-     def order_id = column[Long]("order_id")
-
-     def payment = column[Long]("payment")
-
-     def dispute = column[String]("dispute")
-
-     def status = column[String]("status")
-
-     def order_id_fk = foreignKey("ord_fk", order_id, ord)(_.id)
-
-     def payment_fk = foreignKey("pay_fk", payment, pay)(_.id)
-
-     def * = (id, order_id, payment, dispute, status) <> ((OrderItem.apply _).tupled, OrderItem.unapply)
-   }
-     import orderRepository.OrderTable
-     import paymentRepository.PaymentTable
 
       val ord = TableQuery[OrderTable]
       val pay = TableQuery[PaymentTable]

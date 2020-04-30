@@ -1,0 +1,24 @@
+@(photo: Form[PhotoForm], product: Seq[Product])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@import helper._
+
+@flash.get("success").getOrElse("")
+
+@form(routes.PhotoController.addHandle()) {
+    @helper.CSRF.formField
+    @inputFile(photo("photo"))
+
+
+
+    <select name="product" id="product">
+    @for(cat <- product){
+        <option value="@cat.id">@cat.name</option>
+    }
+    </select>
+
+
+
+    <div class="buttons">
+        <input type="submit" value="Add Product"/>
+    </div>
+}

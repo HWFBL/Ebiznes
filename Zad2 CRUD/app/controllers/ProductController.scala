@@ -24,8 +24,6 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
       "category" -> number,
       "price" -> of(doubleFormat),
       "quantity" -> number,
-      "rating" -> longNumber,
-      "photo" -> longNumber
     )(CreateProductForm.apply)(CreateProductForm.unapply)
   }
 
@@ -37,8 +35,6 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
       "category" -> number,
       "price" -> of(doubleFormat),
       "quantity" -> number,
-      "rating" -> longNumber,
-      "photo" -> longNumber
     )(UpdateProductForm.apply)(UpdateProductForm.unapply)
   }
 
@@ -48,13 +44,13 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
 
   def getProducts: Action[AnyContent] = Action.async { implicit request =>
     val produkty = productsRepo.list()
-    produkty.map( products => Ok(views.html.products(products)))
+    produkty.map( prods => Ok(views.html.product.products(prods)))
   }
 
   def getProduct(id: Long): Action[AnyContent] = Action.async { implicit request =>
     val produkt = productsRepo.getByIdOption(id)
     produkt.map(product => product match {
-      case Some(p) => Ok(views.html.product(p))
+      case Some(p) => Ok(views.html.product.product(p))
       case None => Redirect(routes.HomeController.getProducts())
     })
   }
@@ -73,10 +69,10 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
 
     val produkt = productsRepo.getById(id)
     produkt.map(product => {
-      val prodForm = updateProductForm.fill(UpdateProductForm(product.id, product.name, product.description,product.category, product.price, product.quantity, product.rating, product.photo))
+      val prodForm = updateProductForm.fill(UpdateProductForm(product.id, product.name, product.description,product.category, product.price, product.quantity))
       //  id, product.name, product.description, product.category)
       //updateProductForm.fill(prodForm)
-      Ok(views.html.productupdate(prodForm, categ))
+      Ok(views.html.product.productupdate(prodForm, categ))
     })
   }
 
@@ -90,12 +86,12 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
     updateProductForm.bindFromRequest.fold(
       errorForm => {
         Future.successful(
-          BadRequest(views.html.productupdate(errorForm, categ))
+          BadRequest(views.html.product.productupdate(errorForm, categ))
         )
       },
       product => {
-        productsRepo.update(product.id, Product(product.id, product.name, product.description, product.category, product.price, product.quantity, product.rating
-        , product.photo)).map { _ =>
+        productsRepo.update(product.id, Product(product.id, product.name, product.description, product.category, product.price, product.quantity
+        )).map { _ =>
           Redirect(routes.HomeController.updateProduct(product.id)).flashing("success" -> "product updated")
         }
       }
@@ -106,7 +102,7 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
 
   def addProduct: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
     val categories = categoryRepo.list()
-    categories.map (cat => Ok(views.html.productadd(productForm, cat)))
+    categories.map (cat => Ok(views.html.product.productadd(productForm, cat)))
   }
 
   def addProductHandle = Action.async { implicit request =>
@@ -119,11 +115,11 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
     productForm.bindFromRequest.fold(
       errorForm => {
         Future.successful(
-          BadRequest(views.html.productadd(errorForm, categ))
+          BadRequest(views.html.product.productadd(errorForm, categ))
         )
       },
       product => {
-        productsRepo.create(product.name, product.description, product.category, product.price, product.quantity, product.rating, product.photo).map { _ =>
+        productsRepo.create(product.name, product.description, product.category, product.price, product.quantity).map { _ =>
           Redirect(routes.HomeController.addProduct()).flashing("success" -> "product.created")
         }
       }
@@ -159,5 +155,5 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
   */
 }
 
-case class CreateProductForm(name: String, description: String, category: Int, price: Double, quantity: Int, rating: Long, photo: Long)
-case class UpdateProductForm(id: Long, name: String, description: String, category: Int,  price: Double, quantity: Int, rating: Long, photo: Long)
+case class CreateProductForm(name: String, description: String, category: Int, price: Double, quantity: Int)
+case class UpdateProductForm(id: Long, name: String, description: String, category: Int,  price: Double, quantity: Int)

@@ -3,7 +3,7 @@ package repositories
 import javax.inject.{Inject, Singleton}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
-import models.Customer
+import models._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -14,16 +14,7 @@ class CustomerRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider)(im
   import dbConfig._
   import profile.api._
 
-    class CustomerTable(tag: Tag) extends Table[Customer](tag, "customer") {
 
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def forename = column[String]("forename")
-    def name = column[String]("name")
-      def email = column[String]("email")
-
-    def * = (id, forename, name, email) <> ((Customer.apply _).tupled, Customer.unapply)
-
-  }
 
   val customer = TableQuery[CustomerTable]
 
@@ -48,5 +39,10 @@ class CustomerRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider)(im
   }
 
   def delete(id: Long): Future[Unit] = db.run (customer.filter(_.id === id).delete).map(_ => ())
+
+  def update(id: Long, new_cust: Customer): Future[Unit] = {
+    val custToUpdate: Customer = new_cust.copy(id)
+    db.run(customer.filter(_.id === id).update(custToUpdate)).map(_ => ())
+  }
 
 }

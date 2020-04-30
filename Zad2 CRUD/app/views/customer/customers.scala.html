@@ -1,0 +1,13 @@
+@(customers: Seq[Customer])
+
+@for(customer <- customers) {
+    <b>@customer.name</b>
+    @customer.forename
+    <a href="@controllers.routes.CustomerController.update(customer.id)">Edit</a>
+    <a href="@controllers.routes.CustomerController.delete(customer.id)">Delete</a>
+}
+
+
+
+
+

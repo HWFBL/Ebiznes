@@ -1,0 +1,8 @@
+@(shippings: Seq[Shipping])
+
+    @for(shipping <- shippings) {
+        <b>@shipping.id</b>
+        @shipping.street
+        <a href="@controllers.routes.ShippingController.update(shipping.id)">Edit</a>
+        <a href="@controllers.routes.ShippingController.delete(shipping.id)">Delete</a>
+    }

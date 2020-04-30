@@ -4,71 +4,79 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET           /                               controllers.HomeController.index
-GET           /addproduct                     controllers.HomeController.addProduct
-POST          /addproducthandle               controllers.HomeController.addProductHandle
-GET           /updateproduct/:id              controllers.HomeController.updateProduct(id: Long)
-POST          /updateproducthandle            controllers.HomeController.updateProductHandle
+GET           /                                   controllers.HomeController.index
+GET           /addproduct                         controllers.HomeController.addProduct
+POST          /addproducthandle                   controllers.HomeController.addProductHandle
+GET           /updateproduct/:id                  controllers.HomeController.updateProduct(id: Long)
+POST          /updateproducthandle                controllers.HomeController.updateProductHandle
 
-GET           /products                       controllers.HomeController.getProducts
-GET           /product/:id                    controllers.HomeController.getProduct(id: Long)
-GET           /delete/:id                     controllers.HomeController.delete(id: Long)
+GET           /products                           controllers.HomeController.getProducts
+GET           /product/:id                        controllers.HomeController.getProduct(id: Long)
+GET           /delete/:id                         controllers.HomeController.delete(id: Long)
 # An example controller showing how to use dependency injection
-GET           /count                          controllers.CountController.count
+GET           /count                              controllers.CountController.count
 # An example controller showing how to write asynchronous code
-GET           /message                        controllers.AsyncController.message
+GET           /message                            controllers.AsyncController.message
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
+GET           /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
 
-GET           /customers                      controllers.CustomerController.getCustomers
-GET           /customer/:customerId           controllers.CustomerController.getCustomer(customerId: Long)
-GET           /add/customer                   controllers.CustomerController.add
-PUT           /customers/:customerId          controllers.CustomerController.update(customerId: Long)
-DELETE        /customers/:customerId          controllers.CustomerController.delete(customerId: Long)
-
-
-GET           /comments                       controllers.CommentController.getAll
-GET           /comments/:commentId            controllers.CommentController.get(commentId: Long)
-POST          /comments                       controllers.CommentController.create
-PUT           /comments/:commentId            controllers.CommentController.update(commentId: Long)
-DELETE        /comments/:commentId            controllers.CommentController.delete(commentId: Long)
+GET           /customers                          controllers.CustomerController.getCustomers
+GET           /customer/:customerId               controllers.CustomerController.getCustomer(customerId: Long)
+GET           /addcustomer                        controllers.CustomerController.add
+POST          /addcustomerhandle/customer         controllers.CustomerController.addHandle
+GET           /updatecustomer/:customerId         controllers.CustomerController.update(customerId: Long)
+POST          /updatecustomerhandle               controllers.CustomerController.updateHandle
+GET           /deletecustomers/:customerId        controllers.CustomerController.delete(customerId: Long)
 
 
-
-GET           /ratings                        controllers.RatingController.getAll
-GET           /ratings/:ratingId              controllers.RatingController.get(ratingId: Long)
-POST          /ratings                        controllers.RatingController.add
-PUT           /ratings/:ratingId              controllers.RatingController.update(ratingId: Long)
-DELETE        /ratings/:ratingId              controllers.RatingController.delete(ratingId: Long)
-
-GET           /shipping                       controllers.ShippingController.getAll
-GET           /shipping/:shippingId           controllers.ShippingController.get(shippingId: Long)
-POST          /shipping                       controllers.ShippingController.add
-PUT           /shipping/:shippingId           controllers.ShippingController.update(shippingId: Long)
-DELETE        /shipping/:shippingId           controllers.ShippingController.delete(shippingId: Long)
-
-GET           /orders/                        controllers.OrderController.getAll
-GET           /orders/:orderId                controllers.OrderController.get(orderId: Long)
-POST          /orders                         controllers.OrderController.add
-PUT           /orders/:orderId                controllers.OrderController.update(orderId: Long)
-DELETE        /orders/:orderId                controllers.OrderController.delete(orderId: Long)
-
-GET           /order-item/                    controllers.OrderItemController.getAll
-GET           /order-item/:orderItemId        controllers.OrderItemController.get(orderItemId: Long)
-POST          /order-item                     controllers.OrderItemController.add
-PUT           /order-item/:orderItemId        controllers.OrderItemController.update(orderItemId: Long)
-DELETE        /order-item/:orderItemId        controllers.OrderItemController.delete(orderItemId: Long)
+GET           /comments                           controllers.CommentController.getAll
+GET           /comments/:commentId                controllers.CommentController.get(commentId: Long)
+POST          /comments                           controllers.CommentController.create
+PUT           /comments/:commentId                controllers.CommentController.update(commentId: Long)
+DELETE        /comments/:commentId                controllers.CommentController.delete(commentId: Long)
 
 
-GET           /payments                       controllers.PaymentController.getAll
-GET           /payments/:paymentId            controllers.PaymentController.get(paymentId: Long)
-POST          /payment                        controllers.PaymentController.add
-PUT           /payment/:paymentId             controllers.PaymentController.update(paymentId: Long)
-DELETE        /payment/:paymentId             controllers.PaymentController.delete(paymentId: Long)
 
-GET           /photo                          controllers.PhotoController.getAll
-GET           /photo/:photoId                 controllers.PhotoController.get(photoId: Long)
-POST          /photo                          controllers.PhotoController.add
-PUT           /photo/:photoId                 controllers.PhotoController.update(photoId: Long)
-DELETE        /photo/:photoId                controllers.PhotoController.delete(photoId: Long)
+GET           /ratings                            controllers.RatingController.getAll
+GET           /ratings/:ratingId                  controllers.RatingController.get(ratingId: Long)
+POST          /ratings                            controllers.RatingController.add
+PUT           /ratings/:ratingId                  controllers.RatingController.update(ratingId: Long)
+DELETE        /ratings/:ratingId                  controllers.RatingController.delete(ratingId: Long)
+
+GET           /shippings                          controllers.ShippingController.getAll
+GET           /shipping/:shippingId               controllers.ShippingController.get(shippingId: Long)
+GET           /updateshippinghandle/              controllers.ShippingController.updateShippingHandle
+GET           /addshipping                        controllers.ShippingController.add
+POST          /addshippinghandle                  controllers.ShippingController.addShippingHandler
+GET           /updateshipping/:shippingId         controllers.ShippingController.update(shippingId: Long)
+GET           /deleteshipping/:shippingId         controllers.ShippingController.delete(shippingId: Long)
+
+GET           /orders/                            controllers.OrderController.getAll
+GET           /order/:orderId                     controllers.OrderController.get(orderId: Long)
+POST          /addorder                           controllers.OrderController.add
+#POST          /addorderHandle                    controllers.OrderController.addHandle
+PUT           /orders/:orderId                    controllers.OrderController.update(orderId: Long)
+DELETE        /orders/:orderId                    controllers.OrderController.delete(orderId: Long)
+
+GET           /order-item/                        controllers.OrderItemController.getAll
+GET           /order-item/:orderItemId            controllers.OrderItemController.get(orderItemId: Long)
+POST          /order-item                         controllers.OrderItemController.add
+PUT           /order-item/:orderItemId            controllers.OrderItemController.update(orderItemId: Long)
+DELETE        /order-item/:orderItemId            controllers.OrderItemController.delete(orderItemId: Long)
+
+
+GET           /payments                           controllers.PaymentController.getAll
+GET           /payments/:paymentId                controllers.PaymentController.get(paymentId: Long)
+GET           /addpayment                         controllers.PaymentController.add
+POST          /paymentHandle                      controllers.PaymentController.addHandle
+GET           /updatepayment/:paymentId           controllers.PaymentController.update(paymentId: Long)
+POST          /updatepaymenthandle                controllers.PaymentController.updateHandle
+GET           /deletepayment/:paymentId           controllers.PaymentController.delete(paymentId: Long)
+
+GET           /photos                             controllers.PhotoController.getAll
+GET           /photo/:photoId                     controllers.PhotoController.get(photoId: Long)
+GET           /addphoto                           controllers.PhotoController.add
+POST          /addphotohandle                     controllers.PhotoController.addHandle
+PUT           /photo/:photoId                     controllers.PhotoController.update(photoId: Long)
+DELETE        /photo/:photoId                     controllers.PhotoController.delete(photoId: Long)

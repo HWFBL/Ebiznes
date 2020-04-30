@@ -1,35 +1,105 @@
 package controllers
 
 import javax.inject.Inject
-import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
+import models.Shipping
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.mvc.{AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
 import repositories.ShippingRepository
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
-class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc){
-  def add = Action {
-    Ok("")
+class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+
+  val shippingForm: Form[CreateShippingForm] = Form {
+    mapping(
+      "street" -> nonEmptyText,
+      "house_number" -> nonEmptyText,
+      "city" -> nonEmptyText,
+      "zip_code" -> nonEmptyText,
+    )(CreateShippingForm.apply)(CreateShippingForm.unapply)
   }
 
-  def delete(ratingId: Long) = Action {
-    Ok("")
+  val shippingUpdateForm: Form[UpdateShippingForm] = Form {
+    mapping(
+      "id" -> longNumber,
+      "street" -> nonEmptyText,
+      "house_number" -> nonEmptyText,
+      "city" -> nonEmptyText,
+      "zip_code" -> nonEmptyText,
+    )(UpdateShippingForm.apply)(UpdateShippingForm.unapply)
   }
 
-  def update(ratingId: Long) = Action {
-    Ok("")
+
+  def add = Action { implicit request: MessagesRequest[AnyContent] =>
+    Ok(views.html.shipping.addshipping(shippingForm))
+  }
+
+  def addShippingHandler = Action.async { implicit request =>
+
+    shippingForm.bindFromRequest.fold(
+      errorForm => {
+        Future.successful(
+          BadRequest(views.html.shipping.addshipping(errorForm))
+        )
+      },
+      shipment => {
+        shippingRepository.create(shipment.street, shipment.house_number, shipment.city, shipment.zip_code).map { _ =>
+          Redirect(routes.ShippingController.add()).flashing("succes" -> "shipment.created")
+        }
+      }
+    )
+  }
+
+  def delete(id: Long) = Action {
+    shippingRepository.delete(id)
+    Redirect("/shippings")
+  }
+
+  def update(id: Long) = Action.async {
+    implicit request =>
+
+      val shipment = shippingRepository.getById(id)
+      shipment.map(ship => {
+        val shipForm = shippingUpdateForm.fill(UpdateShippingForm(ship.id, ship.street, ship.house_number, ship.city, ship.zip_code))
+        Ok(views.html.shipping.updateshipping(shipForm))
+      })
+  }
+
+  def updateShippingHandle = Action.async { implicit request =>
+
+    shippingUpdateForm.bindFromRequest.fold(
+      errorForm => {
+        Future.successful(
+          BadRequest(views.html.shipping.updateshipping(errorForm))
+        )
+      },
+      shipment => {
+        shippingRepository.update(shipment.id, Shipping(shipment.id, shipment.street, shipment.house_number, shipment.city, shipment.zip_code
+        ) ).map { _ =>
+          Redirect(routes.ShippingController.update(shipment.id)).flashing("succes" -> "shipment created")
+        }
+      }
+    )
+
   }
 
   def getAll = Action.async {
     implicit request =>
       val ship = shippingRepository.list()
-      ship.map(shipping => Ok(views.html.shippings(shipping)))
+      ship.map(shipping => Ok(views.html.shipping.shippings(shipping)))
   }
 
   def get(id: Long) = Action.async { implicit request =>
     val ship = shippingRepository.getByIdOption(id)
     ship.map(shippings => shippings match {
-      case Some(c) => Ok(views.html.shipping(c))
+      case Some(c) => Ok(views.html.shipping.shipping(c))
       case None => Redirect(routes.ShippingController.getAll)
     })
   }
 }
+
+case class CreateShippingForm(street: String, house_number: String, city: String, zip_code: String)
+
+case class UpdateShippingForm(id: Long, street: String, house_number: String, city: String, zip_code: String)

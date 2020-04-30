@@ -1,7 +1,0 @@
-@(payments: Seq[Payment])
-
-    @for(payment <- payments) {
-        <b>@payment.total_price</b>
-        @payment.is_done
-        @payment.date
-    }

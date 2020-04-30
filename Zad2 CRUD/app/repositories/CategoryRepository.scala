@@ -1,7 +1,7 @@
 package repositories
 
 import javax.inject.{Inject, Singleton}
-import models.Category
+import models._
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
@@ -14,11 +14,7 @@ class CategoryRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(im
   import dbConfig._
   import profile.api._
 
-  class CategoryTable(tag: Tag) extends Table[Category](tag, "category") {
-    def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-    def name = column[String]("name")
-    def * = (id, name) <> ((Category.apply _).tupled, Category.unapply)
-  }
+
 
   val category = TableQuery[CategoryTable]
 

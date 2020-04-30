@@ -1,6 +1,6 @@
 package repositories
 
-import models.Comment
+import models._
 import javax.inject.{Inject, Singleton}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
@@ -14,13 +14,7 @@ class CommentRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
   import dbConfig._
   import profile.api._
 
-   class CommentTable(tag: Tag) extends Table[Comment](tag, "comment") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-    def content = column[String]("content")
-
-    def * = (id, content) <> ((Comment.apply _).tupled, Comment.unapply)
-  }
 
   val comment = TableQuery[CommentTable]
   

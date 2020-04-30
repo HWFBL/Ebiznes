@@ -9,6 +9,8 @@
   <input name="id" id="id" value="@product("id").value" type="hidden" />
   @inputText(product("name"))
   @inputText(product("description"))
+  @inputText(product("price"))
+  @inputText(product("quantity"))
 
   <select name="category" id="category">
   @for(cat <- category){

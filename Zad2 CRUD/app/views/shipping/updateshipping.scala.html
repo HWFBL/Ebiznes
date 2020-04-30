@@ -1,0 +1,18 @@
+@(shipping: Form[UpdateShippingForm])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@import helper._
+
+@flash.get("success").getOrElse("")
+
+@form(routes.ShippingController.updateShippingHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@shipping("id").value" type="hidden" />
+    @inputText(shipping("street"))
+    @inputText(shipping("house_number"))
+    @inputText(shipping("city"))
+    @inputText(shipping("zip_code"))
+
+    <div class="buttons">
+        <input type="submit" value="Update shipping info"/>
+    </div>
+}
