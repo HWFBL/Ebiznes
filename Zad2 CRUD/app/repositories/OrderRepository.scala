@@ -1,5 +1,6 @@
 package repositories
 
+import akka.pattern.FutureRef
 import javax.inject.{Inject, Singleton}
 import models._
 import play.api.db.slick.DatabaseConfigProvider
@@ -26,6 +27,13 @@ class OrderRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, custom
 
       into {case ((customer, product, shipping, quantity), id) => Order(id, customer, product, shipping, quantity)}
       ) += (customer,product, shipping, quantity)
+  }
+
+  def delete(id: Long ): Future[Unit] = db.run(order.filter(_.id === id).delete).map( _ => ())
+
+  def update(id: Long, new_order: Order) = {
+    val ordToUpdate: Order = new_order.copy(id)
+    db.run(order.filter(_.id === id).update(ordToUpdate)).map( _ => ())
   }
 
   def getById(id: Long): Future[Order] = db.run {

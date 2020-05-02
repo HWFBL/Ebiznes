@@ -6,7 +6,7 @@ import play.api.data.Forms._
 import play.api.data.format.Formats._
 import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
 import repositories.{PhotoRepository, ProductRepository}
-import models.Product
+import models._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -15,7 +15,7 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
 
   val photoForm: Form[PhotoForm] = Form {
     mapping(
-      "photo" -> byteNumber,
+      "photo" -> nonEmptyText,
       "product" -> longNumber,
 
     )(PhotoForm.apply)(PhotoForm.unapply)
@@ -24,7 +24,7 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
   val updatephotoForm: Form[UpdatePhotoForm] = Form {
     mapping(
       "id" -> longNumber,
-      "photo" -> byteNumber,
+      "photo" -> nonEmptyText,
       "product" -> longNumber,
 
     )(UpdatePhotoForm.apply)(UpdatePhotoForm.unapply)
@@ -56,13 +56,48 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
     )
 
   }
-    def delete(photoId: Long) = Action {
-      Ok("")
+    def delete(id: Long) = Action {
+      photoRepository.delete(id)
+      Redirect("/photos")
+      Redirect("/photos")
     }
 
-    def update(photoId: Long) = Action {
-      Ok("")
+    def update(photoId: Long) = Action.async { implicit request =>
+
+      var prod: Seq[Product] = Seq[Product]()
+      val products = productRepository.list().onComplete {
+        case Success(cat) => prod = cat
+        case Failure(_) => print("fail")
+      }
+
+      val photo = photoRepository.getById(photoId)
+      photo.map(ph => {
+        val phForm = updatephotoForm.fill(UpdatePhotoForm(ph.id, ph.photo, ph.product))
+        Ok(views.html.photo.updatephoto(phForm, prod))
+      })
     }
+
+  def updateHandle = Action.async { implicit request =>
+
+    var prod: Seq[Product] = Seq[Product]()
+    val products = productRepository.list().onComplete {
+      case Success(cat) => prod = cat
+      case Failure(_) => print("fail")
+    }
+
+    updatephotoForm.bindFromRequest.fold(
+      errorForm => {
+        Future.successful(
+          BadRequest(views.html.photo.updatephoto(errorForm, prod))
+        )
+      },
+      photo => {
+        photoRepository.update(photo.id, Photo(photo.id, photo.photo, photo.product)).map { _ =>
+          Redirect(routes.PhotoController.update(photo.id)).flashing("success" -> "photo updated")
+        }
+      }
+    )
+  }
 
     def getAll = Action.async {
       implicit request =>
@@ -77,9 +112,12 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
         case None => Redirect(routes.PhotoController.getAll)
       })
     }
+
+
+
   }
 
 
-  case class PhotoForm(photo: Byte, product: Long)
+  case class PhotoForm(photo: String, product: Long)
 
-  case class UpdatePhotoForm(id: Long, photo: Byte, product: Long)
+  case class UpdatePhotoForm(id: Long, photo: String, product: Long)

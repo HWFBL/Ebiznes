@@ -1,0 +1,31 @@
+
+@(comment: Form[CommentForm], product: Seq[Product], rating: Seq[Rating])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@import helper._
+
+@flash.get("success").getOrElse("")
+
+@form(routes.CommentController.addHandle()) {
+    @helper.CSRF.formField
+    @textarea(comment("content"))
+
+
+
+    <select name="product" id="product">
+    @for(cat <- product){
+        <option value="@cat.id">@cat.name</option>
+    }
+    </select>
+
+    <select name="rating" id="rating">
+    @for(c <- rating){
+        <option value="@c.id">@c.value</option>
+    }
+    </select>
+
+
+
+    <div class="buttons">
+        <input type="submit" value="Add Comment"/>
+    </div>
+}

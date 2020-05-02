@@ -1,0 +1,33 @@
+
+@(orderItem: Form[OrderItemForm], order: Seq[Order], payment: Seq[Payment])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@import helper._
+
+@flash.get("success").getOrElse("")
+
+@form(routes.OrderItemController.addHandle()) {
+    @helper.CSRF.formField
+    @inputText(orderItem("dispute"))
+    @inputText(orderItem("status"))
+
+
+
+    <select name="order" id="order">
+    @for(cat <- order){
+        <option value="@cat.id">@cat.id</option>
+    }
+    </select>
+
+    <select name="payment" id="payment">
+    @for(c <- payment){
+        <option value="@c.id">@c.total_price</option>
+    }
+    </select>
+
+
+
+
+    <div class="buttons">
+        <input type="submit" value="Add Order"/>
+    </div>
+}

@@ -2,6 +2,7 @@
 
     @for(orderItem <- orderItems) {
         <b>@orderItem.id</b>
+        @orderItem.status
 
         <a href="@controllers.routes.OrderItemController.update(orderItem.id)">Edit</a>
         <a href="@controllers.routes.OrderItemController.delete(orderItem.id)">Delete</a>

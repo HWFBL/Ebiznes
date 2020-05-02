@@ -1,0 +1,8 @@
+@(comments: Seq[Comment])
+
+    @for(comment <- comments) {
+        <b>@comment.id</b>
+        <b>@comment.content</b>
+        <a href="@controllers.routes.CommentController.update(comment.id)">Edit</a>
+        <a href="@controllers.routes.CommentController.delete(comment.id)">Delete</a>
+    }

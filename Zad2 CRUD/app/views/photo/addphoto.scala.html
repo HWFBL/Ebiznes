@@ -6,7 +6,7 @@
 
 @form(routes.PhotoController.addHandle()) {
     @helper.CSRF.formField
-    @inputFile(photo("photo"))
+    @inputText(photo("photo"))
 
 
 

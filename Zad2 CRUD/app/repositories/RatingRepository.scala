@@ -33,7 +33,14 @@ class RatingRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impl
     rating.filter(_.id === id).result.headOption
   }
 
+  def delete(id: Long): Future[Unit] = db.run(rating.filter(_.id === id).delete).map( _ => ())
+
   def list(): Future[Seq[Rating]] = db.run {
     rating.result
+  }
+
+  def update(id: Long, new_rating: Rating): Future[Unit] = {
+    val ratToUpdate: Rating = new_rating.copy(id)
+    db.run(rating.filter(_.id === id).update(ratToUpdate)).map( _ => ())
   }
 }

@@ -1,0 +1,33 @@
+
+@(rating: Form[UpdateRatingForm], product: Seq[Product], customer: Seq[Customer])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@import helper._
+
+@flash.get("success").getOrElse("")
+
+@form(routes.RatingController.updateHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@rating("id").value" type="hidden" />
+
+    @inputText(rating("value"))
+
+
+
+    <select name="product" id="product">
+    @for(cat <- product){
+        <option value="@cat.id">@cat.name</option>
+    }
+    </select>
+
+    <select name="customer" id="customer">
+    @for(c <- customer){
+        <option value="@c.id">@c.name</option>
+    }
+    </select>
+
+
+
+    <div class="buttons">
+        <input type="submit" value="Add Rating"/>
+    </div>
+}

@@ -43,7 +43,7 @@ CREATE TABLE "product" (
 
 CREATE TABLE "photo" (
  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
- "photo" BLOB NOT NULL,
+ "photo" VARCHAR NOT NULL,
  "product" INTEGER NOT NULL,
  FOREIGN KEY ("product") REFERENCES product("id")
 );

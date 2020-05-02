@@ -1,36 +1,145 @@
 package controllers
 
 import javax.inject.Inject
-import play.api.mvc._
-import repositories.{ CommentRepository, ProductRepository, RatingRepository}
+import models._
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.mvc.{MessagesRequest, _}
+import repositories.{CommentRepository, ProductRepository, RatingRepository}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
-class CommentController @Inject()(productsRepo: ProductRepository, ratingRepository: RatingRepository, commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc)  {
+class CommentController @Inject()(productRepository: ProductRepository, ratingRepository: RatingRepository, commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc)  {
 
-  def create = Action {
-    Ok("")
+  val commentForm: Form[CommentForm] = Form {
+    mapping(
+      "content" -> nonEmptyText,
+      "product" -> longNumber,
+      "rating" -> longNumber
+
+    )(CommentForm.apply)(CommentForm.unapply)
   }
 
-  def update(commentId: Long) = Action {
-    Ok("")
+  val updatecommentForm: Form[UpdateCommentForm] = Form {
+    mapping(
+      "id" -> longNumber,
+      "content" -> nonEmptyText,
+      "product" -> longNumber,
+      "rating" -> longNumber
+
+    )(UpdateCommentForm.apply)(UpdateCommentForm.unapply)
   }
 
-  def delete(commentId: Long) = Action {
-    Ok("")
+  def add = Action.async { implicit  request: MessagesRequest[AnyContent] =>
+    val products: Seq[Product]  = Await.result(productRepository.list(), Duration.Inf)
+    val rating: Seq[Rating] = Await.result(ratingRepository.list(), Duration.Inf)
+
+    Future.successful(Ok(views.html.comment.addcomment(commentForm, products, rating)))
+  }
+
+  def addHandle = Action.async { implicit request: MessagesRequest[AnyContent]=>
+    var prod: Seq[Product] = Seq[Product]()
+    val products = productRepository.list().onComplete {
+      case Success(cat) => prod = cat
+      case Failure(_) => print("fail")
+
+    }
+
+    var rat: Seq[Rating] = Seq[Rating]()
+    val ratings = ratingRepository.list().onComplete {
+      case Success(c) => rat = c
+      case Failure(_) => print("fail")
+    }
+
+    commentForm.bindFromRequest.fold(
+      errorForm => {
+        Future.successful(
+          BadRequest(views.html.comment.addcomment(errorForm, prod, rat))
+        )
+      },
+      com => {
+        commentRepository.create(com.content, com.product, com.rating).map { _ =>
+          Redirect(routes.CommentController.add()).flashing("success" -> "comment added")
+        }
+      }
+    )
+
+  }
+
+
+
+  def update(id: Long) = Action.async { implicit request =>
+    var prod: Seq[Product] = Seq[Product]()
+    val products = productRepository.list().onComplete {
+      case Success(cat) => prod = cat
+      case Failure(_) => print("fail")
+
+    }
+
+    var rat: Seq[Rating] = Seq[Rating]()
+    val ratings = ratingRepository.list().onComplete {
+      case Success(c) => rat = c
+      case Failure(_) => print("fail")
+    }
+
+    val comment = commentRepository.getById(id)
+    comment.map(com => {
+      val comForm = updatecommentForm.fill(UpdateCommentForm(com.id, com.content, com.product, com.rating))
+
+      Ok(views.html.comment.updatecomment(comForm, prod, rat))
+    })
+  }
+
+
+  def updateHandle = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    var prod: Seq[Product] = Seq[Product]()
+    val products = productRepository.list().onComplete {
+      case Success(cat) => prod = cat
+      case Failure(_) => print("fail")
+
+    }
+
+    var rat: Seq[Rating] = Seq[Rating]()
+    val ratings = ratingRepository.list().onComplete {
+      case Success(c) => rat = c
+      case Failure(_) => print("fail")
+    }
+
+    updatecommentForm.bindFromRequest.fold(
+      errorForm => {
+        Future.successful(
+          BadRequest(views.html.comment.updatecomment(errorForm, prod, rat))
+        )
+      },
+      com => {
+        commentRepository.update(com.id, Comment(com.id, com.content, com.product, com.rating)).map { _ =>
+          Redirect(routes.CommentController.update(com.id)).flashing("success" -> "comment updated")
+        }
+      }
+    )
+  }
+
+    def delete(commentId: Long) = Action {
+    commentRepository.delete(commentId)
+      Redirect("/comments")
   }
 
   def getAll = Action.async {
     implicit request =>
       val comments = commentRepository.list
-      comments.map(comment => Ok(views.html.comments(comment)))
+      comments.map(comment => Ok(views.html.comment.comments(comment)))
   }
 
   def get(id: Long) = Action.async {
     val comment = commentRepository.getByIdOption(id)
     comment.map(comments => comments match {
-      case Some(c) => Ok(views.html.comment(c))
+      case Some(c) => Ok(views.html.comment.comment(c))
       case None => Redirect(routes.CommentController.getAll)
     })
   }
 }
+
+case class CommentForm(content: String, product: Long, rating: Long)
+case class UpdateCommentForm(id: Long, content: String, product: Long, rating: Long)

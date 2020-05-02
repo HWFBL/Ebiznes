@@ -1,0 +1,39 @@
+
+@(order: Form[UpdateOrderForm], product: Seq[Product], customer: Seq[Customer], shipping: Seq[Shipping])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@import helper._
+
+@flash.get("success").getOrElse("")
+
+@form(routes.OrderController.updateHandle()) {
+    @helper.CSRF.formField
+    <input name="id" id="id" value="@order("id").value" type="hidden" />
+
+    @inputText(order("quantity"))
+
+
+
+    <select name="product" id="product">
+    @for(cat <- product){
+        <option value="@cat.id">@cat.name</option>
+    }
+    </select>
+
+    <select name="customer" id="customer">
+    @for(c <- customer){
+        <option value="@c.id">@c.name</option>
+    }
+    </select>
+
+    <select name="shipping" id="shipping">
+    @for(c <- shipping){
+        <option value="@c.id">@c.city</option>
+    }
+    </select>
+
+
+
+    <div class="buttons">
+        <input type="submit" value="Add Order"/>
+    </div>
+}

@@ -18,12 +18,12 @@ class CommentRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
 
   val comment = TableQuery[CommentTable]
   
-  def create(content: String): Future[Comment] = db.run {
+  def create(content: String, product: Long, rating: Long): Future[Comment] = db.run {
 //    (comment returning comment.map(_.id)) += Comment(0, content)
-    (comment.map(c => (c.content))
+    (comment.map(c => (c.content, c.product, c.rating))
       returning comment.map(_.id)
-      into ((content, id) => Comment(id, content))
-      ) += (content)
+      into { case ((content, product, rating), id) => Comment(id, content, product, rating) }
+      ) += (content, product, rating)
   }
 
   def list: Future[Seq[Comment]] = db.run {
@@ -37,4 +37,11 @@ class CommentRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
   def getByIdOption(id: Long): Future[Option[Comment]] = db.run {
     comment.filter(_.id === id).result.headOption
   }
+  def update(id: Long, new_comment: Comment): Future[Unit] = {
+    val comToUpdate: Comment = new_comment.copy(id)
+    db.run(comment.filter(_.id === id).update(comToUpdate)).map(_ => ())
+  }
+
+  def delete(id: Long): Future[Unit] = db.run(comment.filter(_.id === id).delete).map( _ => ())
+
 }
