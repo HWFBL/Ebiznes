@@ -18,12 +18,12 @@ class CommentRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
 
   val comment = TableQuery[CommentTable]
   
-  def create(content: String, product: Long, rating: Long): Future[Comment] = db.run {
-//    (comment returning comment.map(_.id)) += Comment(0, content)
-    (comment.map(c => (c.content, c.product, c.rating))
-      returning comment.map(_.id)
-      into { case ((content, product, rating), id) => Comment(id, content, product, rating) }
-      ) += (content, product, rating)
+  def create(content: String, product: Long, rating: Long) = db.run {
+    (comment returning comment.map(_.id)) += Comment(0, content, product, rating)
+//    (comment.map(c => (c.content, c.product, c.rating))
+//      returning comment.map(_.id)
+//      into { case ((content, product, rating), id) => Comment(id, content, product, rating) }
+//      ) += (content, product, rating)
   }
 
   def list: Future[Seq[Comment]] = db.run {
