@@ -20,7 +20,43 @@ GET           /api/orders                          controllers.api.OrderApiContr
 GET           /api/orders/:orderId                 controllers.api.OrderApiController.get(orderId: Long)
 POST          /api/orders                          controllers.api.OrderApiController.add
 PUT           /api/orders/:orderId                 controllers.api.OrderApiController.update(orderId: Long)
-DELETE        /api/orders/:orderId                     controllers.api.OrderApiController.delete(orderId: Long)
+DELETE        /api/orders/:orderId                 controllers.api.OrderApiController.delete(orderId: Long)
+
+GET           /api/orderItem                       controllers.api.OrderItemApiController.getAll
+GET           /api/orderItem/:orderItemId          controllers.api.OrderItemApiController.get(orderItemId: Long)
+POST          /api/orderItem                       controllers.api.OrderItemApiController.add
+PUT           /api/orderItem/:orderItemId          controllers.api.OrderItemApiController.update(orderItemId: Long)
+DELETE        /api/orderItem/:orderItemId          controllers.api.OrderItemApiController.delete(orderItemId: Long)
+
+GET           /api/payments                        controllers.api.PaymentApiController.getAll
+GET           /api/payments/:paymentId             controllers.api.PaymentApiController.get(paymentId: Long)
+POST          /api/payments                        controllers.api.PaymentApiController.add
+PUT           /api/payments/:paymentId             controllers.api.PaymentApiController.update(paymentId: Long)
+DELETE        /api/payments/:paymentId             controllers.api.PaymentApiController.delete(paymentId: Long)
+
+GET           /api/photos                          controllers.api.PhotoApiController.getAll
+GET           /api/photos/:photoId                 controllers.api.PhotoApiController.get(photoId: Long)
+POST          /api/photos                          controllers.api.PhotoApiController.add
+PUT           /api/photos/:photoId                 controllers.api.PhotoApiController.update(photoId: Long)
+DELETE        /api/photos/:photoId                 controllers.api.PhotoApiController.delete(photoId: Long)
+
+GET           /api/products                        controllers.api.ProductApiController.getAll
+GET           /api/products/:productId             controllers.api.ProductApiController.get(productId: Long)
+POST          /api/products                        controllers.api.ProductApiController.add
+PUT           /api/products/:productId             controllers.api.ProductApiController.update(productId: Long)
+DELETE        /api/products/:productId             controllers.api.ProductApiController.delete(productId: Long)
+
+GET           /api/ratings                         controllers.api.RatingApiController.getAll
+GET           /api/ratings/:ratingId               controllers.api.RatingApiController.get(ratingId: Long)
+POST          /api/ratings                         controllers.api.RatingApiController.add
+PUT           /api/ratings/:ratingId               controllers.api.RatingApiController.update(ratingId: Long)
+DELETE        /api/ratings/:ratingId               controllers.api.RatingApiController.delete(ratingId: Long)
+
+GET           /api/shippings                           controllers.api.ShippingApiController.getAll
+GET           /api/shippings/:shippingId               controllers.api.ShippingApiController.get(shippingId: Long)
+POST          /api/shippings                           controllers.api.ShippingApiController.add
+PUT           /api/shippings/:shippingId               controllers.api.ShippingApiController.update(shippingId: Long)
+DELETE        /api/shippings/:shippingId               controllers.api.ShippingApiController.delete(shippingId: Long)
 
 ###########     FROMS       ###########
 # An example controller showing a sample home page
