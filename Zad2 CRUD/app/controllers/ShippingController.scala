@@ -15,9 +15,9 @@ class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: M
   val shippingForm: Form[CreateShippingForm] = Form {
     mapping(
       "street" -> nonEmptyText,
-      "house_number" -> nonEmptyText,
+      "houseNumber" -> nonEmptyText,
       "city" -> nonEmptyText,
-      "zip_code" -> nonEmptyText,
+      "zipCode" -> nonEmptyText,
     )(CreateShippingForm.apply)(CreateShippingForm.unapply)
   }
 
@@ -25,9 +25,9 @@ class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: M
     mapping(
       "id" -> longNumber,
       "street" -> nonEmptyText,
-      "house_number" -> nonEmptyText,
+      "houseNumber" -> nonEmptyText,
       "city" -> nonEmptyText,
-      "zip_code" -> nonEmptyText,
+      "zipCode" -> nonEmptyText,
     )(UpdateShippingForm.apply)(UpdateShippingForm.unapply)
   }
 
@@ -45,7 +45,7 @@ class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: M
         )
       },
       shipment => {
-        shippingRepository.create(shipment.street, shipment.house_number, shipment.city, shipment.zip_code).map { _ =>
+        shippingRepository.create(shipment.street, shipment.houseNumber, shipment.city, shipment.zipCode).map { _ =>
           Redirect(routes.ShippingController.add()).flashing("succes" -> "shipment.created")
         }
       }
@@ -62,7 +62,7 @@ class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: M
 
       val shipment = shippingRepository.getById(id)
       shipment.map(ship => {
-        val shipForm = shippingUpdateForm.fill(UpdateShippingForm(ship.id, ship.street, ship.house_number, ship.city, ship.zip_code))
+        val shipForm = shippingUpdateForm.fill(UpdateShippingForm(ship.id, ship.street, ship.houseNumber, ship.city, ship.zipCode))
         Ok(views.html.shipping.updateshipping(shipForm))
       })
   }
@@ -76,7 +76,7 @@ class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: M
         )
       },
       shipment => {
-        shippingRepository.update(shipment.id, Shipping(shipment.id, shipment.street, shipment.house_number, shipment.city, shipment.zip_code
+        shippingRepository.update(shipment.id, Shipping(shipment.id, shipment.street, shipment.houseNumber, shipment.city, shipment.zipCode
         ) ).map { _ =>
           Redirect(routes.ShippingController.update(shipment.id)).flashing("succes" -> "shipment created")
         }
@@ -100,6 +100,6 @@ class ShippingController @Inject()(shippingRepository: ShippingRepository, cc: M
   }
 }
 
-case class CreateShippingForm(street: String, house_number: String, city: String, zip_code: String)
+case class CreateShippingForm(street: String, houseNumber: String, city: String, zipCode: String)
 
-case class UpdateShippingForm(id: Long, street: String, house_number: String, city: String, zip_code: String)
+case class UpdateShippingForm(id: Long, street: String, houseNumber: String, city: String, zipCode: String)

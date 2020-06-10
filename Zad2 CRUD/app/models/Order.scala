@@ -16,9 +16,9 @@ class OrderTable(tag: Tag) extends Table[Order](tag, "order") {
   def shipping = column[Long]("shipping")
   def quantity = column[Int]("quantity")
 
-  def customer_fk = foreignKey("cust_fk", customer, _cust)(_.id)
-  def shipping_fk = foreignKey("ship_fk", shipping, _ship)(_.id)
-  def product_fk =foreignKey("prod_fk", product, _prod)(_.id)
+  def customerFk = foreignKey("cust_fk", customer, _cust)(_.id)
+  def shippingFk = foreignKey("ship_fk", shipping, _ship)(_.id)
+  def productFk =foreignKey("prod_fk", product, _prod)(_.id)
   def * = (id, customer, product, shipping, quantity) <> ((Order.apply _).tupled, Order.unapply)
 }
 

@@ -24,7 +24,7 @@ class ProductTable(tag: Tag) extends Table[Product](tag, "product") {
   def quantity = column[Int]("quantity")
 
 
-  def category_fk = foreignKey("cat_fk", category, TableQuery[CategoryTable])(_.id)
+  def categoryFk = foreignKey("cat_fk", category, TableQuery[CategoryTable])(_.id)
 
 
   /**

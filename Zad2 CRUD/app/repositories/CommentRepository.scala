@@ -37,8 +37,8 @@ class CommentRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
   def getByIdOption(id: Long): Future[Option[Comment]] = db.run {
     comment.filter(_.id === id).result.headOption
   }
-  def update(id: Long, new_comment: Comment): Future[Unit] = {
-    val comToUpdate: Comment = new_comment.copy(id)
+  def update(id: Long, newComment: Comment): Future[Unit] = {
+    val comToUpdate: Comment = newComment.copy(id)
     db.run(comment.filter(_.id === id).update(comToUpdate)).map(_ => ())
   }
 

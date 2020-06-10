@@ -11,11 +11,11 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class RatingController @Inject()(ratingRepository: RatingRepository,customerRepository: CustomerRepository , productRepository: ProductRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class RatingController @Inject()(ratingRepository: RatingRepository, customerRepository: CustomerRepository, productRepository: ProductRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   val ratingForm: Form[RatingForm] = Form {
     mapping(
-     "customer" -> longNumber,
+      "customer" -> longNumber,
       "value" -> number,
       "product" -> longNumber
 
@@ -34,22 +34,22 @@ class RatingController @Inject()(ratingRepository: RatingRepository,customerRepo
 
 
   def add = Action.async { implicit request: MessagesRequest[AnyContent] =>
-    val products: Seq[Product]  = Await.result(productRepository.list(), Duration.Inf)
-    val cust: Seq[Customer]  = Await.result(customerRepository.list(), Duration.Inf)
+    val products: Seq[Product] = Await.result(productRepository.list(), Duration.Inf)
+    val cust: Seq[Customer] = Await.result(customerRepository.list(), Duration.Inf)
 
-     Future.successful(Ok(views.html.rating.addrating(ratingForm, products,  cust)))
+    Future.successful(Ok(views.html.rating.addrating(ratingForm, products, cust)))
   }
 
   def addHandle = Action.async { implicit request =>
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
 
     }
 
     var cust: Seq[Customer] = Seq[Customer]()
-    val customers = customerRepository.list().onComplete {
+    customerRepository.list().onComplete {
       case Success(c) => cust = c
       case Failure(_) => print("fail")
     }
@@ -76,20 +76,20 @@ class RatingController @Inject()(ratingRepository: RatingRepository,customerRepo
 
   def update(id: Long): Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
 
     }
 
     var cust: Seq[Customer] = Seq[Customer]()
-    val customers = customerRepository.list().onComplete {
+    customerRepository.list().onComplete {
       case Success(c) => cust = c
       case Failure(_) => print("fail")
     }
     val rating = ratingRepository.getById(id)
     rating.map(rat => {
-      val ratForm = updateratingForm.fill(UpdateRatingForm(rat.id,rat.customer_id, rat.value ,  rat.product))
+      val ratForm = updateratingForm.fill(UpdateRatingForm(rat.id, rat.customerId, rat.value, rat.product))
       //  id, product.name, product.description, product.category)
       //updateProductForm.fill(prodForm)
       Ok(views.html.rating.updaterating(ratForm, prod, cust))
@@ -98,14 +98,14 @@ class RatingController @Inject()(ratingRepository: RatingRepository,customerRepo
 
   def updateHandle = Action.async { implicit request: MessagesRequest[AnyContent] =>
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
 
     }
 
     var cust: Seq[Customer] = Seq[Customer]()
-    val customers = customerRepository.list().onComplete {
+    customerRepository.list().onComplete {
       case Success(c) => cust = c
       case Failure(_) => print("fail")
     }
@@ -143,4 +143,5 @@ class RatingController @Inject()(ratingRepository: RatingRepository,customerRepo
 }
 
 case class RatingForm(customer: Long, value: Int, product: Long)
+
 case class UpdateRatingForm(id: Long, customer: Long, value: Int, product: Long)

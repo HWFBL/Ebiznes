@@ -3,7 +3,7 @@ package models
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
-case class OrderItem(id: Long, order_id: Long, payment: Long, dispute: String, status: String)
+case class OrderItem(id: Long, orderId: Long, payment: Long, dispute: String, status: String)
 
 class OrderItemTable(tag: Tag) extends Table[OrderItem](tag, "orderItem") {
   val _ord = TableQuery[OrderTable]
@@ -11,7 +11,7 @@ class OrderItemTable(tag: Tag) extends Table[OrderItem](tag, "orderItem") {
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-  def order_id = column[Long]("order_id")
+  def orderId = column[Long]("orderId")
 
   def payment = column[Long]("payment")
 
@@ -19,11 +19,11 @@ class OrderItemTable(tag: Tag) extends Table[OrderItem](tag, "orderItem") {
 
   def status = column[String]("status")
 
-  def order_id_fk = foreignKey("ord_fk", order_id, _ord)(_.id)
+  def orderIdFk = foreignKey("ord_fk", orderId, _ord)(_.id)
 
-  def payment_fk = foreignKey("pay_fk", payment, _pay)(_.id)
+  def paymentFk = foreignKey("pay_fk", payment, _pay)(_.id)
 
-  def* = (id, order_id, payment, dispute, status) <> ((OrderItem.apply _).tupled, OrderItem.unapply)
+  def* = (id, orderId, payment, dispute, status) <> ((OrderItem.apply _).tupled, OrderItem.unapply)
 }
 
   object OrderItem {

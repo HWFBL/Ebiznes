@@ -10,7 +10,7 @@ import repositories.PaymentRepository
 
 import scala.concurrent.ExecutionContext
 
-case class CreatePayment(total_price: Double, date: Date,is_done: Int)
+case class CreatePayment(totalPrice: Double, date: Date,isDone: Int)
 
 object CreatePayment {
   implicit val formatPayment = Json.format[CreatePayment]
@@ -36,7 +36,7 @@ class PaymentApiController @Inject() (paymentRepository: PaymentRepository, cc: 
         BadRequest(Json.obj("message" -> JsError.toJson(error)))
       },
       payment => {
-        paymentRepository.create(payment.total_price, payment.date, payment.is_done)
+        paymentRepository.create(payment.totalPrice, payment.date, payment.isDone)
         Ok(Json.obj("message" -> "Payment added"))
       }
     )
@@ -51,7 +51,7 @@ class PaymentApiController @Inject() (paymentRepository: PaymentRepository, cc: 
             BadRequest(Json.obj("message" -> JsError.toJson(error)))
           },
           payment => {
-            paymentRepository.update(id, Payment(id, payment.total_price, payment.date, payment.is_done))
+            paymentRepository.update(id, Payment(id, payment.totalPrice, payment.date, payment.isDone))
             Ok(Json.obj("message" -> "Payment upated"))
           }
         )

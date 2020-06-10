@@ -17,9 +17,9 @@ class PaymentController @Inject() (paymentRepository: PaymentRepository, cc: Mes
 
   val paymentForm: Form[CreatePaymentForm] = Form {
     mapping(
-      "total_price" -> of(doubleFormat),
+      "totalPrice" -> of(doubleFormat),
       "date" -> sqlDate,
-      "is_done" -> number,
+      "isDone" -> number,
 
     )(CreatePaymentForm.apply)(CreatePaymentForm.unapply)
   }
@@ -27,9 +27,9 @@ class PaymentController @Inject() (paymentRepository: PaymentRepository, cc: Mes
   val paymentUpdateForm: Form[UpdatePaymentForm] = Form {
     mapping(
       "id" -> longNumber,
-      "total_price" -> of(doubleFormat),
+      "totalPrice" -> of(doubleFormat),
       "date" -> sqlDate,
-      "is_done" -> number,
+      "isDone" -> number,
 
     )(UpdatePaymentForm.apply)(UpdatePaymentForm.unapply)
   }
@@ -46,7 +46,7 @@ class PaymentController @Inject() (paymentRepository: PaymentRepository, cc: Mes
         )
       },
       payment => {
-        paymentRepository.create(payment.total_price, payment.date, payment.is_done).map { _ =>
+        paymentRepository.create(payment.totalPrice, payment.date, payment.isDone).map { _ =>
           Redirect(routes.PaymentController.add()).flashing("succes" -> "payment created")
         }
       }
@@ -63,7 +63,7 @@ class PaymentController @Inject() (paymentRepository: PaymentRepository, cc: Mes
 
       val payment = paymentRepository.getById(id)
       payment.map(pay => {
-        val payForm = paymentUpdateForm.fill(UpdatePaymentForm(pay.id, pay.total_price, pay.date, pay.is_done))
+        val payForm = paymentUpdateForm.fill(UpdatePaymentForm(pay.id, pay.totalPrice, pay.date, pay.isDone))
         Ok(views.html.payment.udpatePayment(payForm))
       })
   }
@@ -77,7 +77,7 @@ class PaymentController @Inject() (paymentRepository: PaymentRepository, cc: Mes
         )
       },
       payment => {
-        paymentRepository.update(payment.id, Payment(payment.id, payment.total_price, payment.date, payment.is_done
+        paymentRepository.update(payment.id, Payment(payment.id, payment.totalPrice, payment.date, payment.isDone
         ) ).map { _ =>
           Redirect(routes.PaymentController.update(payment.id)).flashing("succes" -> "payment created")
         }
@@ -101,6 +101,6 @@ class PaymentController @Inject() (paymentRepository: PaymentRepository, cc: Mes
   }
 }
 
-case class CreatePaymentForm(total_price: Double, date: Date, is_done: Int)
+case class CreatePaymentForm(totalPrice: Double, date: Date, isDone: Int)
 
-case class UpdatePaymentForm(id: Long, total_price: Double, date: Date, is_done: Int)
+case class UpdatePaymentForm(id: Long, totalPrice: Double, date: Date, isDone: Int)

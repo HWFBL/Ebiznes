@@ -14,7 +14,7 @@ class PhotoTable(tag: Tag) extends Table[Photo](tag, "photo") {
 
   def product = column[Long]("product")
 
-  def product_fk = foreignKey("prod_fk", product, _prod)(_.id)
+  def productFk = foreignKey("prod_fk", product, _prod)(_.id)
 
   def * = (id, photo, product) <> ((Photo.apply _).tupled, Photo.unapply)
 

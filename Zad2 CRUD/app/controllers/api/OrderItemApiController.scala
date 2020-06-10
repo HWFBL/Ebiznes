@@ -8,7 +8,7 @@ import repositories.OrderItemRepository
 
 import scala.concurrent.ExecutionContext
 
-case class CreateOrderItem(order_id: Long, payment: Long, dispute: String, status: String)
+case class CreateOrderItem(orderId: Long, payment: Long, dispute: String, status: String)
 
 object CreateOrderItem {
   implicit val formatOrderItem = Json.format[CreateOrderItem]
@@ -34,7 +34,7 @@ class OrderItemApiController @Inject()(orderItemRepository: OrderItemRepository,
         BadRequest(Json.obj("message" -> JsError.toJson(error)))
       },
       order => {
-        orderItemRepository.create(order.order_id, order.payment, order.dispute, order.status)
+        orderItemRepository.create(order.orderId, order.payment, order.dispute, order.status)
         Ok(Json.obj("message" -> "Order added"))
       }
     )
@@ -49,7 +49,7 @@ class OrderItemApiController @Inject()(orderItemRepository: OrderItemRepository,
             BadRequest(Json.obj("message" -> JsError.toJson(error)))
           },
           order => {
-            orderItemRepository.update(id, OrderItem(id, order.order_id, order.payment, order.dispute, order.status))
+            orderItemRepository.update(id, OrderItem(id, order.orderId, order.payment, order.dispute, order.status))
             Ok(Json.obj("message" -> "Order upated"))
           }
         )

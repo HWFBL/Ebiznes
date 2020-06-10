@@ -11,7 +11,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class CommentController @Inject()(productRepository: ProductRepository, ratingRepository: RatingRepository, commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc)  {
+class CommentController @Inject()(productRepository: ProductRepository, ratingRepository: RatingRepository, commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   val commentForm: Form[CommentForm] = Form {
     mapping(
@@ -32,23 +32,23 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
     )(UpdateCommentForm.apply)(UpdateCommentForm.unapply)
   }
 
-  def add = Action.async { implicit  request: MessagesRequest[AnyContent] =>
-    val products: Seq[Product]  = Await.result(productRepository.list(), Duration.Inf)
+  def add = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    val products: Seq[Product] = Await.result(productRepository.list(), Duration.Inf)
     val rating: Seq[Rating] = Await.result(ratingRepository.list(), Duration.Inf)
 
     Future.successful(Ok(views.html.comment.addcomment(commentForm, products, rating)))
   }
 
-  def addHandle = Action.async { implicit request: MessagesRequest[AnyContent]=>
+  def addHandle = Action.async { implicit request: MessagesRequest[AnyContent] =>
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
 
     }
 
     var rat: Seq[Rating] = Seq[Rating]()
-    val ratings = ratingRepository.list().onComplete {
+    ratingRepository.list().onComplete {
       case Success(c) => rat = c
       case Failure(_) => print("fail")
     }
@@ -69,17 +69,16 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
   }
 
 
-
   def update(id: Long) = Action.async { implicit request =>
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
 
     }
 
     var rat: Seq[Rating] = Seq[Rating]()
-    val ratings = ratingRepository.list().onComplete {
+    ratingRepository.list().onComplete {
       case Success(c) => rat = c
       case Failure(_) => print("fail")
     }
@@ -95,14 +94,14 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
 
   def updateHandle = Action.async { implicit request: MessagesRequest[AnyContent] =>
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
 
     }
 
     var rat: Seq[Rating] = Seq[Rating]()
-    val ratings = ratingRepository.list().onComplete {
+    ratingRepository.list().onComplete {
       case Success(c) => rat = c
       case Failure(_) => print("fail")
     }
@@ -121,9 +120,9 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
     )
   }
 
-    def delete(commentId: Long) = Action {
+  def delete(commentId: Long) = Action {
     commentRepository.delete(commentId)
-      Redirect("/comments")
+    Redirect("/comments")
   }
 
   def getAll = Action.async {
@@ -142,4 +141,5 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
 }
 
 case class CommentForm(content: String, product: Long, rating: Long)
+
 case class UpdateCommentForm(id: Long, content: String, product: Long, rating: Long)

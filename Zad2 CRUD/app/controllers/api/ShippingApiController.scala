@@ -8,7 +8,7 @@ import repositories.ShippingRepository
 
 import scala.concurrent.ExecutionContext
 
-case class CreateShipping( street: String, house_number: String, city: String, zip_code: String)
+case class CreateShipping( street: String, houseNumber: String, city: String, zipCode: String)
 
 object CreateShipping {
   implicit val formatShipping = Json.format[CreateShipping]
@@ -34,7 +34,7 @@ class ShippingApiController  @Inject()(shippingRepository: ShippingRepository, c
         BadRequest(Json.obj("message" -> JsError.toJson(error)))
       },
       shipping => {
-        shippingRepository.create(shipping.street, shipping.house_number, shipping.city, shipping.zip_code)
+        shippingRepository.create(shipping.street, shipping.houseNumber, shipping.city, shipping.zipCode)
         Ok(Json.obj("message" -> "Shipping added"))
       }
     )
@@ -49,7 +49,7 @@ class ShippingApiController  @Inject()(shippingRepository: ShippingRepository, c
             BadRequest(Json.obj("message" -> JsError.toJson(error)))
           },
           shipping => {
-            shippingRepository.update(id, Shipping(id, shipping.street, shipping.house_number, shipping.city, shipping.zip_code))
+            shippingRepository.update(id, Shipping(id, shipping.street, shipping.houseNumber, shipping.city, shipping.zipCode))
             Ok(Json.obj("message" -> "Shipping upated"))
           }
         )

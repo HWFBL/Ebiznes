@@ -8,7 +8,7 @@ import repositories.RatingRepository
 
 import scala.concurrent.ExecutionContext
 
-case class CreateRating(customer_id: Long, value: Int, product: Long)
+case class CreateRating(customerId: Long, value: Int, product: Long)
 
 object CreateRating {
   implicit val formatRating = Json.format[CreateRating]
@@ -34,7 +34,7 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, cc: Mess
         BadRequest(Json.obj("message" -> JsError.toJson(error)))
       },
       rating => {
-        ratingRepository.create(rating.customer_id, rating.value, rating.product)
+        ratingRepository.create(rating.customerId, rating.value, rating.product)
         Ok(Json.obj("message" -> "Rating added"))
       }
     )
@@ -49,7 +49,7 @@ class RatingApiController @Inject()(ratingRepository: RatingRepository, cc: Mess
             BadRequest(Json.obj("message" -> JsError.toJson(error)))
           },
           rating => {
-            ratingRepository.update(id, Rating(id, rating.customer_id, rating.value, rating.product))
+            ratingRepository.update(id, Rating(id, rating.customerId, rating.value, rating.product))
             Ok(Json.obj("message" -> "Rating upated"))
           }
         )

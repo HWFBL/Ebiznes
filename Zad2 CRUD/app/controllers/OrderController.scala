@@ -44,14 +44,14 @@ class OrderController @Inject()(orderRepository: OrderRepository, productReposit
 
   def addHandle = Action.async { implicit request =>
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
 
     }
 
     var cust: Seq[Customer] = Seq[Customer]()
-    val customers = customerRepository.list().onComplete {
+    customerRepository.list().onComplete {
       case Success(c) => cust = c
       case Failure(_) => print("fail")
     }
@@ -84,81 +84,81 @@ class OrderController @Inject()(orderRepository: OrderRepository, productReposit
 
   def update(id: Long) = Action.async { implicit request: MessagesRequest[AnyContent] =>
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
 
     }
 
     var cust: Seq[Customer] = Seq[Customer]()
-    val customers = customerRepository.list().onComplete {
+    customerRepository.list().onComplete {
       case Success(c) => cust = c
       case Failure(_) => print("fail")
     }
 
-      var ship: Seq[Shipping] = Seq[Shipping]()
-      val shipping = shippingRepository.list().onComplete {
-        case Success(c) => ship = c
-        case Failure(_) => print("fail")
-      }
-
-      val order = orderRepository.getById(id)
-      order.map(o => {
-        val oForm = updateorderForm.fill(UpdateOrderForm(o.id, o.customer, o.product, o.shipping, o.quantity))
-        //  id, product.name, product.description, product.category)
-        //updateProductForm.fill(prodForm)
-        Ok(views.html.order.updateorder(oForm, prod, cust, ship))
-      })
+    var ship: Seq[Shipping] = Seq[Shipping]()
+    shippingRepository.list().onComplete {
+      case Success(c) => ship = c
+      case Failure(_) => print("fail")
     }
 
+    val order = orderRepository.getById(id)
+    order.map(o => {
+      val oForm = updateorderForm.fill(UpdateOrderForm(o.id, o.customer, o.product, o.shipping, o.quantity))
+      //  id, product.name, product.description, product.category)
+      //updateProductForm.fill(prodForm)
+      Ok(views.html.order.updateorder(oForm, prod, cust, ship))
+    })
+  }
 
-    def updateHandle = Action.async { implicit request: MessagesRequest[AnyContent] =>
-      var prod: Seq[Product] = Seq[Product]()
-      val products = productRepository.list().onComplete {
-        case Success(cat) => prod = cat
-        case Failure(_) => print("fail")
 
-      }
+  def updateHandle = Action.async { implicit request: MessagesRequest[AnyContent] =>
+    var prod: Seq[Product] = Seq[Product]()
+    productRepository.list().onComplete {
+      case Success(cat) => prod = cat
+      case Failure(_) => print("fail")
 
-      var cust: Seq[Customer] = Seq[Customer]()
-      val customers = customerRepository.list().onComplete {
-        case Success(c) => cust = c
-        case Failure(_) => print("fail")
-      }
+    }
 
-      var ship: Seq[Shipping] = Seq[Shipping]()
-      val shipping = shippingRepository.list().onComplete {
-        case Success(c) => ship = c
-        case Failure(_) => print("fail")
-      }
+    var cust: Seq[Customer] = Seq[Customer]()
+    customerRepository.list().onComplete {
+      case Success(c) => cust = c
+      case Failure(_) => print("fail")
+    }
 
-      updateorderForm.bindFromRequest.fold(
-        errorForm => {
-          Future.successful(
-            BadRequest(views.html.order.updateorder(errorForm, prod, cust, ship))
-          )
-        },
-        o => {
-          orderRepository.update(o.id, Order(o.id, o.customer, o.product, o.shipping, o.quantity)).map { _ =>
-            Redirect(routes.OrderController.add()).flashing("success" -> "rating added")
-          }
+    var ship: Seq[Shipping] = Seq[Shipping]()
+    val shipping = shippingRepository.list().onComplete {
+      case Success(c) => ship = c
+      case Failure(_) => print("fail")
+    }
+
+    updateorderForm.bindFromRequest.fold(
+      errorForm => {
+        Future.successful(
+          BadRequest(views.html.order.updateorder(errorForm, prod, cust, ship))
+        )
+      },
+      o => {
+        orderRepository.update(o.id, Order(o.id, o.customer, o.product, o.shipping, o.quantity)).map { _ =>
+          Redirect(routes.OrderController.add()).flashing("success" -> "order updated")
         }
-      )
-    }
+      }
+    )
+  }
 
-    def getAll = Action.async {
-      implicit request =>
-        val ord = orderRepository.list
-        ord.map(orders => Ok(views.html.order.orders(orders)))
-    }
+  def getAll = Action.async {
+    implicit request =>
+      val ord = orderRepository.list
+      ord.map(orders => Ok(views.html.order.orders(orders)))
+  }
 
-    def get(id: Long) = Action.async { implicit request =>
-      val ord = orderRepository.getByIdOption(id)
-      ord.map(order => order match {
-        case Some(c) => Ok(views.html.order.order(c))
-        case None => Redirect(routes.OrderController.getAll)
-      })
-    }
+  def get(id: Long) = Action.async { implicit request =>
+    val ord = orderRepository.getByIdOption(id)
+    ord.map(order => order match {
+      case Some(c) => Ok(views.html.order.order(c))
+      case None => Redirect(routes.OrderController.getAll)
+    })
+  }
 
 }
 

@@ -44,14 +44,14 @@ class OrderItemController @Inject()(orderItemRepository: OrderItemRepository, or
 
   def addHandle = Action.async { implicit request =>
     var ord: Seq[Order] = Seq[Order]()
-    val orders = orderRepository.list().onComplete {
+    orderRepository.list().onComplete {
       case Success(cat) => ord = cat
       case Failure(_) => print("fail")
 
     }
 
     var pay: Seq[Payment] = Seq[Payment]()
-    val payments = paymentRepository.list().onComplete {
+   paymentRepository.list().onComplete {
       case Success(c) => pay = c
       case Failure(_) => print("fail")
     }
@@ -80,14 +80,14 @@ class OrderItemController @Inject()(orderItemRepository: OrderItemRepository, or
 
   def update(id: Long) = Action.async { implicit request: MessagesRequest[AnyContent] =>
     var ord: Seq[Order] = Seq[Order]()
-    val orders = orderRepository.list().onComplete {
+    orderRepository.list().onComplete {
       case Success(cat) => ord = cat
       case Failure(_) => print("fail")
 
     }
 
     var pay: Seq[Payment] = Seq[Payment]()
-    val payments = paymentRepository.list().onComplete {
+    paymentRepository.list().onComplete {
       case Success(c) => pay = c
       case Failure(_) => print("fail")
     }
@@ -96,7 +96,7 @@ class OrderItemController @Inject()(orderItemRepository: OrderItemRepository, or
 
     val orderItem = orderItemRepository.getById(id)
     orderItem.map(o => {
-      val oForm = updateorderItemForm.fill(UpdateOrderItemForm(o.id, o.order_id, o.payment, o.dispute, o.status))
+      val oForm = updateorderItemForm.fill(UpdateOrderItemForm(o.id, o.orderId, o.payment, o.dispute, o.status))
       //  id, product.name, product.description, product.category)
       //updateProductForm.fill(prodForm)
       Ok(views.html.orderItem.updateorderitem(oForm, ord, pay))
@@ -105,14 +105,14 @@ class OrderItemController @Inject()(orderItemRepository: OrderItemRepository, or
 
   def updateHandle = Action.async { implicit request: MessagesRequest[AnyContent] =>
     var ord: Seq[Order] = Seq[Order]()
-    val orders = orderRepository.list().onComplete {
+   orderRepository.list().onComplete {
       case Success(cat) => ord = cat
       case Failure(_) => print("fail")
 
     }
 
     var pay: Seq[Payment] = Seq[Payment]()
-    val payments = paymentRepository.list().onComplete {
+    paymentRepository.list().onComplete {
       case Success(c) => pay = c
       case Failure(_) => print("fail")
     }
@@ -134,13 +134,13 @@ class OrderItemController @Inject()(orderItemRepository: OrderItemRepository, or
 
   def getAll = Action.async {
     implicit request =>
-      val ord_it = orderItemRepository.list()
-      ord_it.map(orders => Ok(views.html.orderItem.orderItems(orders)))
+      val ordIt = orderItemRepository.list()
+      ordIt.map(orders => Ok(views.html.orderItem.orderItems(orders)))
   }
 
   def get(id: Long) = Action.async { implicit request =>
-    val ord_it = orderItemRepository.getByIdOption(id)
-    ord_it.map(order => order match {
+    val ordIt = orderItemRepository.getByIdOption(id)
+    ordIt.map(order => order match {
       case Some(c) => Ok(views.html.orderItem.orderItem(c))
       case None => Redirect(routes.OrderItemController.getAll)
     })

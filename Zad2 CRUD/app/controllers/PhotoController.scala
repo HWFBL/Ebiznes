@@ -37,7 +37,7 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
 
   def addHandle = Action.async { implicit request =>
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
     }
@@ -56,31 +56,32 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
     )
 
   }
-    def delete(id: Long) = Action {
-      photoRepository.delete(id)
-      Redirect("/photos")
-      Redirect("/photos")
+
+  def delete(id: Long) = Action {
+    photoRepository.delete(id)
+    Redirect("/photos")
+    Redirect("/photos")
+  }
+
+  def update(photoId: Long) = Action.async { implicit request =>
+
+    var prod: Seq[Product] = Seq[Product]()
+    productRepository.list().onComplete {
+      case Success(cat) => prod = cat
+      case Failure(_) => print("fail")
     }
 
-    def update(photoId: Long) = Action.async { implicit request =>
-
-      var prod: Seq[Product] = Seq[Product]()
-      val products = productRepository.list().onComplete {
-        case Success(cat) => prod = cat
-        case Failure(_) => print("fail")
-      }
-
-      val photo = photoRepository.getById(photoId)
-      photo.map(ph => {
-        val phForm = updatephotoForm.fill(UpdatePhotoForm(ph.id, ph.photo, ph.product))
-        Ok(views.html.photo.updatephoto(phForm, prod))
-      })
-    }
+    val photo = photoRepository.getById(photoId)
+    photo.map(ph => {
+      val phForm = updatephotoForm.fill(UpdatePhotoForm(ph.id, ph.photo, ph.product))
+      Ok(views.html.photo.updatephoto(phForm, prod))
+    })
+  }
 
   def updateHandle = Action.async { implicit request =>
 
     var prod: Seq[Product] = Seq[Product]()
-    val products = productRepository.list().onComplete {
+    productRepository.list().onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
     }
@@ -99,25 +100,24 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
     )
   }
 
-    def getAll = Action.async {
-      implicit request =>
-        val foto = photoRepository.list
-        foto.map(photo => Ok(views.html.photo.photos(photo)))
-    }
+  def getAll = Action.async {
+    implicit request =>
+      val foto = photoRepository.list
+      foto.map(photo => Ok(views.html.photo.photos(photo)))
+  }
 
-    def get(id: Long) = Action.async { implicit request =>
-      val foto = photoRepository.getByIdOption(id)
-      foto.map(ratings => ratings match {
-        case Some(c) => Ok(views.html.photo.photo(c))
-        case None => Redirect(routes.PhotoController.getAll)
-      })
-    }
-
-
-
+  def get(id: Long) = Action.async { implicit request =>
+    val foto = photoRepository.getByIdOption(id)
+    foto.map(ratings => ratings match {
+      case Some(c) => Ok(views.html.photo.photo(c))
+      case None => Redirect(routes.PhotoController.getAll)
+    })
   }
 
 
-  case class PhotoForm(photo: String, product: Long)
+}
 
-  case class UpdatePhotoForm(id: Long, photo: String, product: Long)
+
+case class PhotoForm(photo: String, product: Long)
+
+case class UpdatePhotoForm(id: Long, photo: String, product: Long)

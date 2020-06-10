@@ -16,12 +16,12 @@ class ShippingRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider)(im
 
    val shipping = TableQuery[ShippingTable]
   
-  def create(street: String, house_number: String, city: String, zip_code: String) = db.run {
-    (shipping.map(u => (u.street, u.house_number, u.city, u.zip_code))
+  def create(street: String, houseNumber: String, city: String, zipCode: String) = db.run {
+    (shipping.map(u => (u.street, u.houseNumber, u.city, u.zipCode))
       returning shipping.map(_.id)
 
-      into {case ((street, house_number, city, zip_code), id) => Shipping(id, street, house_number, city, zip_code)}
-      ) += (street,house_number, city, zip_code)
+      into {case ((street, houseNumber, city, zipCode), id) => Shipping(id, street, houseNumber, city, zipCode)}
+      ) += (street,houseNumber, city, zipCode)
   }
 
 
@@ -38,8 +38,8 @@ class ShippingRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider)(im
     shipping.filter(_.id === id).result.headOption
   }
 
-  def update(id: Long, new_ship: Shipping): Future[Unit] = {
-    val shipToUpdate: Shipping = new_ship.copy(id)
+  def update(id: Long, newShip: Shipping): Future[Unit] = {
+    val shipToUpdate: Shipping = newShip.copy(id)
     db.run(shipping.filter(_.id === id).update(shipToUpdate)).map(_ => ())
   }
 

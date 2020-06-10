@@ -17,12 +17,12 @@ class RatingRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impl
   val cust = TableQuery[CustomerTable]
    val rating = TableQuery[RatingTable]
 
-  def create(customer_id: Long, value: Int, product: Long): Future[Rating] = db.run {
+  def create(customerId: Long, value: Int, product: Long): Future[Rating] = db.run {
     (rating.map(r => (r.customer, r.value, r.product))
       returning rating.map(_.id)
 
       into {case ((customer, value, product), id) => Rating(id, customer, value, product)}
-      ) += (customer_id, value, product)
+      ) += (customerId, value, product)
   }
 
   def getById(id: Long): Future[Rating] = db.run {
@@ -39,8 +39,8 @@ class RatingRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impl
     rating.result
   }
 
-  def update(id: Long, new_rating: Rating): Future[Unit] = {
-    val ratToUpdate: Rating = new_rating.copy(id)
+  def update(id: Long, newRating: Rating): Future[Unit] = {
+    val ratToUpdate: Rating = newRating.copy(id)
     db.run(rating.filter(_.id === id).update(ratToUpdate)).map( _ => ())
   }
 }
