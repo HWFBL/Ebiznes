@@ -1,7 +1,7 @@
 @(payments: Seq[Payment])
 
     @for(payment <- payments) {
-        <b>@payment.total_price</b>
+        <strong>@payment.total_price</strong>
         @payment.is_done
         @payment.date
     <a href="@controllers.routes.PaymentController.update(payment.id)">Edit</a>

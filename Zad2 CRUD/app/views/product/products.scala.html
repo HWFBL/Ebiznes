@@ -1,7 +1,7 @@
 @(products: Seq[Product])
 
 @for(product <- products) {
-  <b>@product.name</b>
+  <strong>@product.name</strong>
   @product.description
   @product.category
   <a href="@controllers.routes.HomeController.updateProduct(product.id)">Edit</a>

@@ -1,7 +1,7 @@
 @(orders: Seq[Order])
 
 @for(order <- orders) {
-    <b>@order.customer</b>
+    <strong>@order.customer</strong>
     @order.product
     @order.shipping
     @order.quantity

@@ -1,7 +1,7 @@
 @(orderItems: Seq[OrderItem])
 
     @for(orderItem <- orderItems) {
-        <b>@orderItem.id</b>
+        <strong>@orderItem.id</strong>
         @orderItem.status
 
         <a href="@controllers.routes.OrderItemController.update(orderItem.id)">Edit</a>
