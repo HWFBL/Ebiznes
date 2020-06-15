@@ -1,11 +1,11 @@
-@(customers: Seq[Customer])
+@* @(customers: Seq[Customer])*@
 
-@for(customer <- customers) {
-    <strong>@customer.name</strong>
-    @customer.forename
-    <a href="@controllers.routes.CustomerController.update(customer.id)">Edit</a>
-    <a href="@controllers.routes.CustomerController.delete(customer.id)">Delete</a>
-}
+@* @for(customer <- customers) {*@
+@*    <strong>@customer.name</strong>*@
+@*    @customer.forename*@
+@*    <a href="@controllers.routes.CustomerController.update(customer.id)">Edit</a>*@
+@*    <a href="@controllers.routes.CustomerController.delete(customer.id)">Delete</a>*@
+@*}*@
 
 
 

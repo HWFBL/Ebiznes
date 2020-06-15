@@ -18,7 +18,17 @@ CREATE TABLE "customer" (
  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
  "forename" VARCHAR NOT NULL,
  "name" VARCHAR NOT NULL,
- "email" VARCHAR NOT NULL
+ "email" VARCHAR NOT NULL,
+ "role" VARCHAR NOt NULL,
+ "providerId" VARCHAR NOT NULL,
+ "providerKey" VARCHAR NOT NULL
+);
+
+CREATE TABLE "password" (
+    "providerKey" VARCHAR NOT NULL PRIMARY KEY,
+    "hasher" VARCHAR NOT NULL,
+    "hash" VARCHAR NOT NULL,
+    "salt" VARCHAR
 );
 
 
@@ -96,6 +106,7 @@ CREATE TABLE "orderItem" (
 DROP TABLE "category";
 DROP TABLE "payment";
 DROP TABLE "customer";
+DROP TABLE "password"
 DROP TABLE "shipping";
 DROP TABLE "product";
 DROP TABLE "photo";

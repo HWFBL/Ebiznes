@@ -5,6 +5,8 @@ import models.Product
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
 import repositories.ProductRepository
+import com.mohiva.play.silhouette.api.Silhouette
+import utils.auth.JwtEnv
 
 import scala.concurrent.ExecutionContext
 
@@ -14,8 +16,8 @@ object CreateProduct {
   implicit val formatProduct = Json.format[CreateProduct]
 }
 
-class ProductApiController @Inject()(productRepository: ProductRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc){
-  def getAll = Action.async { implicit request =>
+class ProductApiController @Inject()(productRepository: ProductRepository, silhouette: Silhouette[JwtEnv], cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc){
+  def getAll = silhouette.UserAwareAction.async { implicit request =>
     val product = productRepository.list()
     product.map(products => Ok(Json.toJson(products)))
   }

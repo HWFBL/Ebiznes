@@ -1,17 +1,17 @@
-@(customer: Form[CreateCustomerForm])(implicit request: MessagesRequestHeader, flash: Flash)
+@* @(customer: Form[CreateCustomerForm])(implicit request: MessagesRequestHeader, flash: Flash)*@
 
-@import helper._
+@* @import helper._*@
 
-@flash.get("success").getOrElse("")
+@* @flash.get("success").getOrElse("")*@
 
-@form(routes.CustomerController.addHandle()) {
-    @helper.CSRF.formField
-    @inputText(customer("forename"))
-    @inputText(customer("name"))
-    @inputText(customer("email"))
+@* @form(routes.CustomerController.addHandle()) {*@
+@*    @helper.CSRF.formField*@
+@*    @inputText(customer("forename"))*@
+@*    @inputText(customer("name"))*@
+@*    @inputText(customer("email"))*@
 
 
-    <div class="buttons">
-        <input type="submit" value="Add customer "/>
-    </div>
-}
+@*    <div class="buttons">*@
+@*        <input type="submit" value="Add customer "/>*@
+@*    </div>*@
+@*}*@

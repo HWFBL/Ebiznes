@@ -1,19 +1,19 @@
-@(customer: Form[UpdateCustomerForm])(implicit request: MessagesRequestHeader, flash: Flash)
+@* @(customer: Form[UpdateCustomerForm])(implicit request: MessagesRequestHeader, flash: Flash)*@
 
-@import helper._
+@* @import helper._*@
 
-@flash.get("success").getOrElse("")
+@* @flash.get("success").getOrElse("")*@
 
-@form(routes.CustomerController.updateHandle()) {
-    @helper.CSRF.formField
-    <input name="id" id="id" value="@customer("id").value" type="hidden" />
+@* @form(routes.CustomerController.updateHandle()) {*@
+@*    @helper.CSRF.formField*@
+@*    <input name="id" id="id" value="@customer("id").value" type="hidden" />*@
 
-    @inputText(customer("forename"))
-    @inputText(customer("name"))
-    @inputText(customer("email"))
+@*    @inputText(customer("forename"))*@
+@*    @inputText(customer("name"))*@
+@*    @inputText(customer("email"))*@
 
 
-    <div class="buttons">
-        <input type="submit" value="Update customer "/>
-    </div>
-}
+@*    <div class="buttons">*@
+@*        <input type="submit" value="Update customer "/>*@
+@*    </div>*@
+@*}*@

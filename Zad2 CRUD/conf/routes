@@ -4,17 +4,21 @@
 # ~~~~
 ###########     API     ###############
 
+POST        /api/auth/signup                controllers.api.AuthApiController.signUp
+POST        /api/auth/signin                controllers.api.AuthApiController.signIn
+GET         /api/auth/me                    controllers.api.AuthApiController.me
+
 GET           /api/comments                        controllers.api.CommentApiController.getAll
 GET           /api/comments/:commentId             controllers.api.CommentApiController.get(commentId: Long)
 POST          /api/comments                        controllers.api.CommentApiController.add
 PUT           /api/comments/:commentId             controllers.api.CommentApiController.update(commentId: Long)
 DELETE        /api/comments/:commentId             controllers.api.CommentApiController.delete(commentId: Long)
 
-GET           /api/customers                       controllers.api.CustomerApiController.getAll
-GET           /api/customers/:customerId           controllers.api.CustomerApiController.get(customerId: Long)
-POST          /api/customers                       controllers.api.CustomerApiController.add
-PUT           /api/customers/:customerId           controllers.api.CustomerApiController.update(customerId: Long)
-DELETE        /api/customers/:customerId           controllers.api.CustomerApiController.delete(customerId: Long)
+#GET           /api/customers                       controllers.api.CustomerApiController.getAll
+#GET           /api/customers/:customerId           controllers.api.CustomerApiController.get(customerId: Long)
+#POST          /api/customers                       controllers.api.CustomerApiController.add
+#PUT           /api/customers/:customerId           controllers.api.CustomerApiController.update(customerId: Long)
+#DELETE        /api/customers/:customerId           controllers.api.CustomerApiController.delete(customerId: Long)
 
 GET           /api/orders                          controllers.api.OrderApiController.getAll
 GET           /api/orders/:orderId                 controllers.api.OrderApiController.get(orderId: Long)
@@ -77,13 +81,13 @@ GET           /message                             controllers.AsyncController.m
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                        controllers.Assets.versioned(path="/public", file: Asset)
 
-GET           /customers                           controllers.CustomerController.getCustomers
-GET           /customer/:customerId                controllers.CustomerController.getCustomer(customerId: Long)
-GET           /addcustomer                         controllers.CustomerController.add
-POST          /addcustomerhandle                   controllers.CustomerController.addHandle
-GET           /updatecustomer/:customerId          controllers.CustomerController.update(customerId: Long)
-POST          /updatecustomerhandle                controllers.CustomerController.updateHandle
-GET           /deletecustomers/:customerId         controllers.CustomerController.delete(customerId: Long)
+#GET           /customers                           controllers.CustomerController.getCustomers
+#GET           /customer/:customerId                controllers.CustomerController.getCustomer(customerId: Long)
+#GET           /addcustomer                         controllers.CustomerController.add
+#POST          /addcustomerhandle                   controllers.CustomerController.addHandle
+#GET           /updatecustomer/:customerId          controllers.CustomerController.update(customerId: Long)
+#POST          /updatecustomerhandle                controllers.CustomerController.updateHandle
+#GET           /deletecustomers/:customerId         controllers.CustomerController.delete(customerId: Long)
 
 
 GET           /comments                            controllers.CommentController.getAll
