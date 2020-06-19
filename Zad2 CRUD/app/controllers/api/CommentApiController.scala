@@ -1,10 +1,12 @@
 package controllers.api
 
+import com.mohiva.play.silhouette.api.Silhouette
 import javax.inject.Inject
-import models.Comment
+import models.{Comment, UserRoles}
 import play.api.libs.json._
 import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents, MessagesRequest}
 import repositories.{CommentRepository, ProductRepository, RatingRepository}
+import utils.auth.{JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -14,7 +16,7 @@ object CreateComment {
   implicit val commentFormat = Json.format[CreateComment]
 }
 
-class CommentApiController @Inject()(productRepository: ProductRepository, ratingRepository: RatingRepository, commentRepository: CommentRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class CommentApiController @Inject()(productRepository: ProductRepository, ratingRepository: RatingRepository, commentRepository: CommentRepository, silhouette: Silhouette[JwtEnv], cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   def getAll = Action.async { implicit request =>
     val comments = commentRepository.list
@@ -28,8 +30,8 @@ class CommentApiController @Inject()(productRepository: ProductRepository, ratin
   }
 
 
-  def add = Action(parse.json) { implicit request =>
-    val body = request.body
+  def add = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Customer)) { implicit request =>
+    val body = request.body.asJson.get
     body.validate[CreateComment].fold(
       error => {
         BadRequest(Json.obj("message" -> JsError.toJson(error)))
@@ -41,7 +43,7 @@ class CommentApiController @Inject()(productRepository: ProductRepository, ratin
     )
   }
 
-  def update(id: Long) = Action.async(parse.json) {implicit request =>
+  def update(id: Long) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Customer)).async(parse.json) {implicit request =>
     commentRepository.getByIdOption(id) map {
       case Some(c) => {
         val body = request.body
@@ -59,7 +61,7 @@ class CommentApiController @Inject()(productRepository: ProductRepository, ratin
     }
   }
 
-  def  delete(id: Long) = Action.async {  implicit request =>
+  def delete(id: Long) =  silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async  {  implicit request =>
     commentRepository.getByIdOption(id) map {
       case Some(c) => {
         commentRepository.delete(id)

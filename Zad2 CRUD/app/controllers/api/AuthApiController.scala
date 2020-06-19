@@ -47,7 +47,7 @@ class AuthApiController @Inject()(cc: ControllerComponents,
 
   val jwtAuthService: AuthenticatorService[JWTAuthenticator] = silhouetteJwt.env.authenticatorService
 
-  def signUp() = silhouetteJwt.UnsecuredAction(parse.json).async { implicit request =>
+  def signUp() = Action(parse.json).async { implicit request =>
     val body = request.body
     body.validate[SignUp].fold(
       errors => {
@@ -68,7 +68,7 @@ class AuthApiController @Inject()(cc: ControllerComponents,
     )
   }
 
-  def signIn() = silhouetteJwt.UnsecuredAction(parse.json).async { implicit request =>
+  def signIn() = Action(parse.json).async { implicit request =>
     val body = request.body
     body.validate[SignIn].fold(
       errors => {

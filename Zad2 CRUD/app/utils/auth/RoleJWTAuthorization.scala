@@ -1,3 +1,4 @@
+package utils.auth
 
 import com.atlassian.jwt.core.http.auth.JwtAuthenticator
 import com.mohiva.play.silhouette.api.{Authenticator, Authorization}
