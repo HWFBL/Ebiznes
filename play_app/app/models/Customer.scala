@@ -11,7 +11,7 @@ object UserRoles extends Enumeration {
   val Admin = "admin"
 }
 
-case class Customer(id: Long, forename: String, name: String, email: String, roles: UserRoles.UserRole, providerId: String, providerKey: String) extends Identity
+case class Customer(id: Long, forename: String, name: String, email: String, roles: UserRoles.UserRole) extends Identity
 
 class CustomerTable(tag: Tag) extends Table[Customer](tag, "customer") {
 
@@ -20,21 +20,20 @@ class CustomerTable(tag: Tag) extends Table[Customer](tag, "customer") {
   def name = column[String]("name")
   def email = column[String]("email")
   def role = column[String]("role")
-  def providerId = column[String]("providerId")
-  def providerKey = column[String]("providerKey")
 
-  def * = (id, forename, name, email, role, providerId, providerKey) <> ((Customer.apply _).tupled, Customer.unapply)
+
+  def * = (id, forename, name, email, role ) <> ((Customer.apply _).tupled, Customer.unapply)
 
 }
 
-case class Password(key: String,
+case class Password(loginInfoId: String,
                     hasher: String,
                     hash: String,
                     salt: Option[String])
 
 
 class PasswordTable(tag: Tag) extends Table[Password](tag, "password") {
-  def key = column[String]("providerKey", O.PrimaryKey)
+  def loginInfoId = column[String]("loginInfoId", O.PrimaryKey)
 
   def hasher = column[String]("hasher")
 
@@ -42,7 +41,7 @@ class PasswordTable(tag: Tag) extends Table[Password](tag, "password") {
 
   def salt = column[Option[String]]("salt")
 
-  def * = (key, hasher, hash, salt) <> ((Password.apply _).tupled, Password.unapply)
+  def * = (loginInfoId, hasher, hash, salt) <> ((Password.apply _).tupled, Password.unapply)
 }
 
 object Password {

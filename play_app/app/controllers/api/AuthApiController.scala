@@ -2,6 +2,7 @@ package controllers.api
 
 
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
+import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.services.AuthenticatorService
 import com.mohiva.play.silhouette.api.util.{Credentials, PasswordHasherRegistry}
 import com.mohiva.play.silhouette.api.{LoginEvent, LoginInfo, Silhouette}
@@ -13,6 +14,7 @@ import models.Customer
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc.{AbstractController, ControllerComponents, MessagesAbstractController, MessagesControllerComponents}
 import repositories.CustomerRepository
+import repositories.authentication.LoginInfoDAO
 import utils.auth._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +40,10 @@ object SignIn {
 
 class AuthApiController @Inject()(cc: ControllerComponents,
                                             userRepository: CustomerRepository,
-
+                                  passwordHasherRegistry: PasswordHasherRegistry,
+                                  loginInfoDAO: LoginInfoDAO,
+                                  authInfoRepository: AuthInfoRepository,
+                                  socialProviderRegistry: SocialProviderRegistry,
                                   errorHandler: JsonErrorHandler,
                                   silhouetteJwt: Silhouette[JwtEnv],
                                             credentialsProvider: CredentialsProvider)
@@ -53,15 +58,23 @@ class AuthApiController @Inject()(cc: ControllerComponents,
       errors => {
         Future.successful(BadRequest(Json.obj("message" -> JsError.toJson(errors))))
       },
-      user => {
-        userRepository.retrieve(LoginInfo(CredentialsProvider.ID, user.email))
-          .flatMap {
-            case Some(user) => Future.successful(BadRequest(Json.obj("message" -> "User already exist")))
-            case None => {
-              userRepository.create(user.firstName, user.lastName, user.email, user.password)
-                .flatMap(jwtAuthService.create(_))
-                .flatMap(jwtAuthService.init(_))
-                .flatMap(token => Future.successful(Ok(Json.obj("message" -> "User created", "token" -> token))))
+      userData => {
+        val loginInfo = LoginInfo(CredentialsProvider.ID, userData.email)
+
+        userRepository.getByEmail(userData.email).flatMap {
+          case Some(user) => Future.successful(BadRequest(Json.obj("message" -> "User already exist")))
+          case None => {
+            for {
+              _ <- userRepository.saveOrUpdate(userData.firstName, userData.lastName, userData.email, loginInfo)
+              authInfo = passwordHasherRegistry.current.hash(userData.password)
+              _ <- authInfoRepository.add(loginInfo, authInfo)
+
+              authenticator <- jwtAuthService.create(loginInfo)
+              token <- jwtAuthService.init(authenticator)
+              result <- jwtAuthService.embed(token, Ok(Json.obj("message" -> "User created", "token" -> token)))
+            } yield {
+              result
+            }
             }
           }
       }
@@ -93,6 +106,44 @@ class AuthApiController @Inject()(cc: ControllerComponents,
         }
       }
     )
+  }
+
+  def gAuth(provider: String) = Action.async { implicit request =>
+    (socialProviderRegistry.get[SocialProvider](provider) match {
+      case Some(p: SocialProvider with CommonSocialProfileBuilder) => {
+        p.authenticate().flatMap {
+          case Left(result) => Future.successful(result)
+          case Right(authInfo) => {
+            p.retrieveProfile(authInfo).flatMap { profile => {
+              loginInfoDAO.getAuthenticationProviders(profile.email.get).flatMap { providers =>
+                if (providers.contains(provider) || providers.isEmpty) {
+                  for {
+
+                    user <- userRepository.saveOrUpdate(profile.firstName.getOrElse(""), profile.lastName.getOrElse(""), profile.email.getOrElse(""), profile.loginInfo)
+                    _ <- authInfoRepository.add(profile.loginInfo, authInfo)
+                    authenticator <- jwtAuthService.create(profile.loginInfo)
+                    token <- jwtAuthService.init(authenticator)
+                    result <- jwtAuthService.embed(token, Redirect(s"http://localhost:3000/oauth/google?name=${profile.fullName.getOrElse("")}&token=$token"))
+                  } yield {
+                    result
+                  }
+                } else {
+                  val errorCode="XD403" // Email is bounded to other provider
+                  Future.successful(Redirect(s"http://localhost:3000/auth/failure?errorCode=$errorCode"))
+                }
+              }
+            }
+            }
+          }
+        }
+      }
+      case None => Future.successful(Status(BAD_REQUEST)(Json.obj("error" -> s"No '$provider' provider")))
+    }).recover {
+      case e: ProviderException => {
+        val errorCode = "XD500" // Unknown error
+        Redirect(s"http://localhost:3000/auth/failure?errorCode=$errorCode")
+      }
+    }
   }
 
 

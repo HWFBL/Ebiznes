@@ -36,7 +36,7 @@ CREATE TABLE "login_info" (
 );
 
 CREATE TABLE "user_login_info" (
-    "userId" VARCHAR NOT NULL,
+    "userId" INTEGER NOT NULL,
     "loginInfoId" VARCHAR NOT NULL
 );
 

@@ -5,6 +5,9 @@ import com.google.inject.{AbstractModule, Provides}
 import com.mohiva.play.silhouette.api.crypto.{Crypter, CrypterAuthenticatorEncoder, Signer}
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.services.AuthenticatorService
+import com.mohiva.play.silhouette.impl.providers.oauth2.GoogleProvider
+import com.mohiva.play.silhouette.impl.providers.state.{CsrfStateItemHandler, CsrfStateSettings}
+import com.mohiva.play.silhouette.impl.providers.{CredentialsProvider, DefaultSocialStateHandler, OAuth2Info, OAuth2Settings, SocialProviderRegistry, SocialStateHandler}
 import com.mohiva.play.silhouette.api.util._
 import com.mohiva.play.silhouette.api.{Environment, EventBus, Silhouette, SilhouetteProvider}
 import com.mohiva.play.silhouette.crypto.{JcaCrypter, JcaCrypterSettings, JcaSigner, JcaSignerSettings}
@@ -16,9 +19,11 @@ import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
 import net.codingwell.scalaguice.ScalaModule
 import play.api.Configuration
+import play.api.libs.ws.WSClient
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc.CookieHeaderEncoding
-import repositories.{PasswordDAO, CustomerRepository}
+import repositories.authentication.{OAuth2InfoDAO, PasswordDAO}
+import repositories.CustomerRepository
 import utils.auth.{CookieEnv, JsonErrorHandler, JwtEnv}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -114,8 +119,8 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
 
 
   @Provides
-  def provideAuthInfoRepository(passwordDAO: DelegableAuthInfoDAO[PasswordInfo]): AuthInfoRepository =
-    new DelegableAuthInfoRepository(passwordDAO)
+  def provideAuthInfoRepository(passwordDAO: DelegableAuthInfoDAO[PasswordInfo], OAuth2InfoDAO: DelegableAuthInfoDAO[OAuth2Info] ): AuthInfoRepository =
+    new DelegableAuthInfoRepository(passwordDAO, OAuth2InfoDAO)
 
   @Provides
   def providePasswordHasherRegistry(passwordHasher: PasswordHasher): PasswordHasherRegistry = {
@@ -126,6 +131,69 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   def provideCredentialsProvider(authInfoRepository: AuthInfoRepository,
                                  passwordHasherRegistry: PasswordHasherRegistry): CredentialsProvider = {
     new CredentialsProvider(authInfoRepository, passwordHasherRegistry)
+  }
+
+
+  @Provides
+  def provideOAuth2InfoDAO(dbConfig: DatabaseConfigProvider): DelegableAuthInfoDAO[OAuth2Info] = {
+    new OAuth2InfoDAO(dbConfig)
+  }
+
+  @Provides
+  def provideSocialProviderRegistry(googleProvider: GoogleProvider): SocialProviderRegistry = {
+    SocialProviderRegistry(Seq(googleProvider))
+  }
+
+  @Provides
+  def provideGoogleProvider(httpLayer: HTTPLayer,
+                            socialStateHandler: SocialStateHandler,
+                            configuration: Configuration): GoogleProvider = {
+    val config = OAuth2Settings(
+      authorizationURL = Option("https://accounts.google.com/o/oauth2/auth"),
+      accessTokenURL = "https://accounts.google.com/o/oauth2/token",
+      redirectURL=Option("http://localhost:9000/api/auth/social/google?status=success"),
+      clientID="GOOGLE_CLIENT_ID",
+      clientSecret="GOOGLE_CLIENT_SECRET",
+      scope=Option("profile email")
+    )
+    new GoogleProvider(httpLayer, socialStateHandler, config)
+  }
+
+  @Provides
+  def provideHTTPLayer(client: WSClient): HTTPLayer = {
+    new PlayHTTPLayer(client)
+  }
+
+  @Provides
+  def provideSocialStateHandler(@Named("social-state-signer") signer: Signer,
+                                csrfStateItemHandler: CsrfStateItemHandler): SocialStateHandler = {
+    new DefaultSocialStateHandler(Set(csrfStateItemHandler), signer)
+  }
+
+  @Provides
+  @Named("social-state-signer")
+  def provideSocialStateSigner(configuration: Configuration): Signer = {
+    val config: JcaSignerSettings = JcaSignerSettings("SecretKey")
+    new JcaSigner(config)
+  }
+
+  @Provides
+  def provideCsrfStateItemHandler(idGenerator: IDGenerator,
+                                  @Named("csrf-state-item-signer") signer: Signer,
+                                  configuration: Configuration): CsrfStateItemHandler = {
+    val settings = CsrfStateSettings(
+      cookieName="OAuth2State",
+      secureCookie = false
+    )
+    new CsrfStateItemHandler(settings, idGenerator, signer)
+  }
+
+  @Provides
+  @Named("csrf-state-item-signer")
+  def provideCSRFStateItemSigner(configuration: Configuration): Signer = {
+    val config: JcaSignerSettings = JcaSignerSettings("SecretKey")
+
+    new JcaSigner(config)
   }
 
   @Provides
