@@ -40,7 +40,7 @@ export default function BaseLayout({children}) {
                     </Typography>
                     <Button color="inherit">Button 1</Button>
                     <Button color="inherit">Button 2</Button>
-                    <Button color="inherit">Button 3</Button>
+                    <Button color="inherit" component={Link} to="/profile">Profile (debug page)</Button>
                     <Button color="inherit" component={Link} to="/login">LOGIN</Button>
                 </Toolbar>
             </AppBar>

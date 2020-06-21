@@ -26,7 +26,7 @@ import scala.concurrent.duration._
 
 class SilhouetteModule extends AbstractModule with ScalaModule {
 
-  val _A_CRP = "authenticator-crypter"
+  
   
   override def configure(): Unit = {
     bind[Silhouette[JwtEnv]].to[SilhouetteProvider[JwtEnv]]
@@ -69,7 +69,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
 
   @Provides
   def provideCookieAuthenticatorService(@Named("authenticator-signer") signer: Signer,
-                                        @Named(_A_CRP) crypter: Crypter,
+                                        @Named("authenticator-crypter") crypter: Crypter,
                                         cookieHeaderEncoding: CookieHeaderEncoding,
                                         fingerprintGenerator: FingerprintGenerator,
                                         idGenerator: IDGenerator,
@@ -94,7 +94,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   }
 
   @Provides
-  def provideJwtAuthenticatorService(@Named(_A_CRP) crypter: Crypter,
+  def provideJwtAuthenticatorService(@Named("authenticator-crypter") crypter: Crypter,
                                      idGenerator: IDGenerator,
                                      configuration: Configuration,
                                      clock: Clock): AuthenticatorService[JWTAuthenticator] = {
@@ -136,7 +136,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   }
 
   @Provides
-  @Named(_A_CRP)
+  @Named("authenticator-crypter")
   def provideAuthenticatorCrypter(configuration: Configuration): Crypter = {
     val config = JcaCrypterSettings("SecretKey")
     new JcaCrypter(config)

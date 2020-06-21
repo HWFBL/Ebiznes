@@ -1,26 +1,71 @@
-import React from "react";
+import React, {useContext, useState} from "react";
 import AuthLayout from "../layouts/AuthLayout";
 import Button from "@material-ui/core/Button";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import {AppContext} from "../utils/AppContext/AppContext";
 
 export default function LoginPage() {
+    const { setToken, setUser } = useContext(AppContext);
+
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
+
+    let history = useHistory();
+
+    const loginSubmit = async () => {
+        try {
+            const token = 'sample token'; // getToken from API call
+            // example:
+            // let res = await axios.post('/auth/login', { email, password });
+            // const token = res.data
+            // res = await axios.get('/auth/me', { headers: { 'X-Auth-Token': token}});
+            // const me = res.data
+
+            const me = {
+                firstName: 'Tomasz',
+                lastName: 'Nowak',
+                email: 'tnowak@gmail.com'
+            }; // getUser from API call
+            setUser(me);
+            setToken(token);
+            setTimeout(() => history.push('/'), 2000);
+        } catch (e) {
+            alert('Wystapil problem');
+            console.error(e);
+        }
+    };
+
     return (
         <AuthLayout>
             <h2>LOGIN</h2>
             <Grid container spacing={2}>
                 <Grid item xs={12} >
-                    <TextField fullWidth id="outlined-basic" label="E-mail" variant="outlined" />
+                    <TextField
+                        fullWidth
+                        label="E-mail"
+                        variant="outlined"
+                        required
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                    />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField fullWidth id="outlined-basic" label="Password" variant="outlined" type="password"/>
+                    <TextField
+                        fullWidth
+                        label="Password"
+                        variant="outlined"
+                        type="password"
+                        required
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}/>
                 </Grid>
             </Grid>
             <Box display="flex" flexDirection="row" py={3}>
                 <Box flexGrow={1}>
-                    <Button variant="contained" color="primary">SIGN IN</Button>
+                    <Button variant="contained" color="primary" onClick={loginSubmit}>SIGN IN</Button>
                 </Box>
                 <Box>
                     <Button color="inherit" component={Link} to="/">HOME PAGE</Button>
