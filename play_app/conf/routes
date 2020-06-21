@@ -4,9 +4,10 @@
 # ~~~~
 ###########     API     ###############
 
-POST        /api/auth/signup                controllers.api.AuthApiController.signUp
-POST        /api/auth/signin                controllers.api.AuthApiController.signIn
-GET         /api/auth/me                    controllers.api.AuthApiController.me
+POST          /api/auth/signup                     controllers.api.AuthApiController.signUp
+POST          /api/auth/signin                     controllers.api.AuthApiController.signIn
+GET           /api/auth/oauth/:providerkey         controllers.api.AuthApiController.gAuth(providerkey)
+GET           /api/auth/me                         controllers.api.AuthApiController.me
 
 GET           /api/comments                        controllers.api.CommentApiController.getAll
 GET           /api/comments/:commentId             controllers.api.CommentApiController.get(commentId: Long)
@@ -56,11 +57,11 @@ POST          /api/ratings                         controllers.api.RatingApiCont
 PUT           /api/ratings/:ratingId               controllers.api.RatingApiController.update(ratingId: Long)
 DELETE        /api/ratings/:ratingId               controllers.api.RatingApiController.delete(ratingId: Long)
 
-GET           /api/shippings                           controllers.api.ShippingApiController.getAll
-GET           /api/shippings/:shippingId               controllers.api.ShippingApiController.get(shippingId: Long)
-POST          /api/shippings                           controllers.api.ShippingApiController.add
-PUT           /api/shippings/:shippingId               controllers.api.ShippingApiController.update(shippingId: Long)
-DELETE        /api/shippings/:shippingId               controllers.api.ShippingApiController.delete(shippingId: Long)
+GET           /api/shippings                       controllers.api.ShippingApiController.getAll
+GET           /api/shippings/:shippingId           controllers.api.ShippingApiController.get(shippingId: Long)
+POST          /api/shippings                       controllers.api.ShippingApiController.add
+PUT           /api/shippings/:shippingId           controllers.api.ShippingApiController.update(shippingId: Long)
+DELETE        /api/shippings/:shippingId           controllers.api.ShippingApiController.delete(shippingId: Long)
 
 ###########     FROMS       ###########
 # An example controller showing a sample home page

@@ -20,17 +20,34 @@ CREATE TABLE "customer" (
  "name" VARCHAR NOT NULL,
  "email" VARCHAR NOT NULL,
  "role" VARCHAR NOt NULL,
- "providerId" VARCHAR NOT NULL,
- "providerKey" VARCHAR NOT NULL
 );
 
 CREATE TABLE "password" (
-    "providerKey" VARCHAR NOT NULL PRIMARY KEY,
+    "loginInfoId" VARCHAR NOT NULL PRIMARY KEY,
     "hasher" VARCHAR NOT NULL,
     "hash" VARCHAR NOT NULL,
     "salt" VARCHAR
 );
 
+CREATE TABLE "login_info" (
+    "id" VARCHAR NOT NULL PRIMARY KEY,
+    "providerId" VARCHAR NOT NULL,
+    "providerKey" VARCHAR NOT NULL
+);
+
+CREATE TABLE "user_login_info" (
+    "userId" VARCHAR NOT NULL,
+    "loginInfoId" VARCHAR NOT NULL
+);
+
+CREATE TABLE "OAuth2Info" (
+    "id" VARCHAR NOT NULL PRIMARY KEY,
+    "accessToken" VARCHAR NOT NULL,
+    "tokenType" VARCHAR,
+    "expiresIn" INTEGER,
+    "refreshToken" VARCHAR,
+    "loginInfoId" VARCHAR NOT NULL
+);
 
 CREATE TABLE "shipping" (
  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -102,7 +119,9 @@ CREATE TABLE "orderItem" (
 
 # --- !Downs
 
-
+DROP TABLE login_info;
+DROP TABLE user_login_info;
+DROP TABLE OAuth2Info;
 DROP TABLE "category";
 DROP TABLE "payment";
 DROP TABLE "customer";
