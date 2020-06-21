@@ -10,7 +10,6 @@ import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
-import scala.util.{Failure, Success}
 
 @Singleton
 class PasswordDAO @Inject()(dbConfigProvider: DatabaseConfigProvider)
