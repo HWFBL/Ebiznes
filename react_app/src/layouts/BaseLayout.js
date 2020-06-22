@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
@@ -6,7 +6,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import {makeStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
+import {AppContext} from "../utils/AppContext/AppContext";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,7 +30,16 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function BaseLayout({children}) {
+    let history = useHistory();
+
     const classes = useStyles();
+    const {getBasketItems, getUser, setUserContext} = useContext(AppContext);
+
+    console.log(getUser)
+    const logoutHandler = () => {
+        setUserContext(null, null);
+        history.push('/');
+    };
 
     return (
         <Container className={classes.container} maxWidth="lg">
@@ -38,10 +48,11 @@ export default function BaseLayout({children}) {
                     <Typography variant="h6" className={classes.title}>
                         News
                     </Typography>
-                    <Button color="inherit">Button 1</Button>
-                    <Button color="inherit">Button 2</Button>
+                    <Button color="inherit" component={Link} to="/">Home</Button>
+                    <Button color="inherit" component={Link} to="/categories">Categories</Button>
                     <Button color="inherit" component={Link} to="/profile">Profile (debug page)</Button>
-                    <Button color="inherit" component={Link} to="/login">LOGIN</Button>
+                    <Button color="inherit" component={Link} to="/basket">Basket ({getBasketItems.length})</Button>
+                    { getUser ? <Button color="inherit" onClick={logoutHandler}>SIGN OUT</Button> : <Button color="inherit" component={Link} to="/login">LOGIN</Button>}
                 </Toolbar>
             </AppBar>
             <Box px={3} py={3}>

@@ -3,7 +3,7 @@ package models
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
-case class Comment(id: Long, content: String, product: Long, rating: Long )
+case class Comment(id: Long, content: String, product: Long)
 
 class CommentTable(tag: Tag) extends Table[Comment](tag, "comment") {
 
@@ -16,13 +16,10 @@ class CommentTable(tag: Tag) extends Table[Comment](tag, "comment") {
 
   def product = column[Long]("product_id")
 
-  def rating = column[Long]("rating")
-
-  def ratingFk = foreignKey("rat_fk", rating, _rat)(_.id)
 
   def prodFk = foreignKey("prod_fk", product, _prod)(_.id)
 
-  def * = (id, content, product, rating) <> ((Comment.apply _).tupled, Comment.unapply)
+  def * = (id, content, product) <> ((Comment.apply _).tupled, Comment.unapply)
 }
 
 object Comment {

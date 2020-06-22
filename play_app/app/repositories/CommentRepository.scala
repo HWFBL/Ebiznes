@@ -18,8 +18,8 @@ class CommentRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
 
   val comment = TableQuery[CommentTable]
   
-  def create(content: String, product: Long, rating: Long) = db.run {
-    (comment returning comment.map(_.id)) += Comment(0, content, product, rating)
+  def create(content: String, product: Long) = db.run {
+    (comment returning comment.map(_.id)) += Comment(0, content, product)
 //    (comment.map(c => (c.content, c.product, c.rating))
 //      returning comment.map(_.id)
 //      into { case ((content, product, rating), id) => Comment(id, content, product, rating) }

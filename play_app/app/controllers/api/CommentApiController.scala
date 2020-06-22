@@ -10,7 +10,7 @@ import utils.auth.{JwtEnv, RoleJWTAuthorization}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class CreateComment(content: String, product: Long, rating: Long)
+case class CreateComment(content: String, product: Long)
 
 object CreateComment {
   implicit val commentFormat = Json.format[CreateComment]
@@ -37,7 +37,7 @@ class CommentApiController @Inject()(productRepository: ProductRepository, ratin
         BadRequest(Json.obj("message" -> JsError.toJson(error)))
       },
       comment => {
-        commentRepository.create(comment.content, comment.product, comment.rating)
+        commentRepository.create(comment.content, comment.product)
         Ok(Json.obj("message" -> "Comment added"))
       }
     )
@@ -52,7 +52,7 @@ class CommentApiController @Inject()(productRepository: ProductRepository, ratin
             BadRequest(Json.obj("message" -> JsError.toJson(error)))
           },
           comment => {
-            commentRepository.update(id, Comment(id, comment.content, comment.product, comment.rating))
+            commentRepository.update(id, Comment(id, comment.content, comment.product))
             Ok(Json.obj("message" -> "Comment upated"))
           }
         )

@@ -17,7 +17,7 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
     mapping(
       "content" -> nonEmptyText,
       "product" -> longNumber,
-      "rating" -> longNumber
+
 
     )(CommentForm.apply)(CommentForm.unapply)
   }
@@ -27,7 +27,7 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
       "id" -> longNumber,
       "content" -> nonEmptyText,
       "product" -> longNumber,
-      "rating" -> longNumber
+
 
     )(UpdateCommentForm.apply)(UpdateCommentForm.unapply)
   }
@@ -60,7 +60,7 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
         )
       },
       com => {
-        commentRepository.create(com.content, com.product, com.rating).map { _ =>
+        commentRepository.create(com.content, com.product).map { _ =>
           Redirect(routes.CommentController.add()).flashing("success" -> "comment added")
         }
       }
@@ -85,7 +85,7 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
 
     val comment = commentRepository.getById(id)
     comment.map(com => {
-      val comForm = updatecommentForm.fill(UpdateCommentForm(com.id, com.content, com.product, com.rating))
+      val comForm = updatecommentForm.fill(UpdateCommentForm(com.id, com.content, com.product))
 
       Ok(views.html.comment.updatecomment(comForm, prod, rat))
     })
@@ -113,7 +113,7 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
         )
       },
       com => {
-        commentRepository.update(com.id, Comment(com.id, com.content, com.product, com.rating)).map { _ =>
+        commentRepository.update(com.id, Comment(com.id, com.content, com.product)).map { _ =>
           Redirect(routes.CommentController.update(com.id)).flashing("success" -> "comment updated")
         }
       }
@@ -140,6 +140,6 @@ class CommentController @Inject()(productRepository: ProductRepository, ratingRe
   }
 }
 
-case class CommentForm(content: String, product: Long, rating: Long)
+case class CommentForm(content: String, product: Long)
 
-case class UpdateCommentForm(id: Long, content: String, product: Long, rating: Long)
+case class UpdateCommentForm(id: Long, content: String, product: Long)

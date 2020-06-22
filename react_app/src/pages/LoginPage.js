@@ -8,7 +8,7 @@ import Box from "@material-ui/core/Box";
 import {AppContext} from "../utils/AppContext/AppContext";
 
 export default function LoginPage() {
-    const { setToken, setUser } = useContext(AppContext);
+    const { setUserContext } = useContext(AppContext);
 
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
@@ -24,13 +24,12 @@ export default function LoginPage() {
             // res = await axios.get('/auth/me', { headers: { 'X-Auth-Token': token}});
             // const me = res.data
 
-            const me = {
+            const user = {
                 firstName: 'Tomasz',
                 lastName: 'Nowak',
                 email: 'tnowak@gmail.com'
             }; // getUser from API call
-            setUser(me);
-            setToken(token);
+            setUserContext(token, user);
             setTimeout(() => history.push('/'), 2000);
         } catch (e) {
             alert('Wystapil problem');

@@ -14,6 +14,10 @@ import AppContextProvider from "./utils/AppContext/AppContextProvider";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFound";
 import axios from 'axios';
+import BasketPage from "./pages/BasketPage";
+import CategoriesPage from "./pages/CategoriesPage";
+import ProductPage from "./pages/ProductPage";
+import CategoryPage from "./pages/CategoryPage";
 
 axios.defaults.baseURL = 'http://localhost:9000/api/';
 axios.defaults.responseType = 'json';
@@ -40,10 +44,10 @@ const app = (
                     <Route exact path="/register"><RegisterPage/></Route>
                     <Route exact path="/profile"><ProfilePage/></Route>
 
-                    <Route exact path="/basket"><TodoPage/></Route>
-                    <Route exact path="/product/:id"><TodoPage/></Route>
-                    <Route exact path="/categories"><TodoPage/></Route>
-                    <Route exact path="/category/:id"><TodoPage/></Route>
+                    <Route exact path="/basket"><BasketPage/></Route>
+                    <Route exact path="/product/:id"><ProductPage/></Route>
+                    <Route exact path="/categories"><CategoriesPage/></Route>
+                    <Route exact path="/category/:id"><CategoryPage/></Route>
 
                     <Route exact path="/404"><NotFoundPage/></Route>
                     <Redirect to="/404"/>

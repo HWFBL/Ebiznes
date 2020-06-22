@@ -7,7 +7,7 @@ export default function ProductList() {
     return (
         <Grid container spacing={2}>
             {products.map(p => (
-                <ProductListItem/>
+                <ProductListItem id={p}/>
             ))}
         </Grid>
     )
