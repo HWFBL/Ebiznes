@@ -8,7 +8,7 @@ import repositories.PhotoRepository
 
 import scala.concurrent.ExecutionContext
 
-case class CreatePhoto(photo: String, product: Long)
+case class CreatePhoto(photo: String, link: String)
 
 object CreatePhoto {
   implicit val formatPhoto = Json.format[CreatePhoto]
@@ -34,7 +34,7 @@ class PhotoApiController @Inject()(photoRepository: PhotoRepository,  cc: Messag
         BadRequest(Json.obj("message" -> JsError.toJson(error)))
       },
       photo => {
-        photoRepository.create(photo.photo, photo.product)
+        photoRepository.create(photo.photo, photo.link)
         Ok(Json.obj("message" -> "Photo added"))
       }
     )
@@ -49,7 +49,7 @@ class PhotoApiController @Inject()(photoRepository: PhotoRepository,  cc: Messag
             BadRequest(Json.obj("message" -> JsError.toJson(error)))
           },
           photo => {
-            photoRepository.update(id, Photo(id, photo.photo, photo.product))
+            photoRepository.update(id, Photo(id, photo.photo, photo.link))
             Ok(Json.obj("message" -> "Photo upated"))
           }
         )

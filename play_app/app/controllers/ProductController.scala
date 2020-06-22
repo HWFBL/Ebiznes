@@ -1,14 +1,15 @@
 package controllers
 
 import javax.inject._
-import models.{Category, Product}
+import models.{Category, Photo, Product}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
 import play.api.data.format.Formats._
-import repositories.{CategoryRepository, ProductRepository}
+import repositories.{CategoryRepository, PhotoRepository, ProductRepository}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 /**
@@ -16,12 +17,13 @@ import scala.util.{Failure, Success}
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: CategoryRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: CategoryRepository, photoRepository: PhotoRepository, cc: MessagesControllerComponents)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   val productForm: Form[CreateProductForm] = Form {
     mapping(
       "name" -> nonEmptyText,
       "description" -> nonEmptyText,
+      "photo" -> longNumber,
       "category" -> number,
       "price" -> of(doubleFormat),
       "quantity" -> number,
@@ -33,6 +35,7 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
       "id" -> longNumber,
       "name" -> nonEmptyText,
       "description" -> nonEmptyText,
+      "photo" -> longNumber,
       "category" -> number,
       "price" -> of(doubleFormat),
       "quantity" -> number,
@@ -70,7 +73,7 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
 
     val produkt = productsRepo.getById(id)
     produkt.map(product => {
-      val prodForm = updateProductForm.fill(UpdateProductForm(product.id, product.name, product.description, product.category, product.price, product.quantity))
+      val prodForm = updateProductForm.fill(UpdateProductForm(product.id, product.name, product.description, product.photo, product.category, product.price, product.quantity))
       //  id, product.name, product.description, product.category)
       //updateProductForm.fill(prodForm)
       Ok(views.html.product.productupdate(prodForm, categ))
@@ -84,6 +87,12 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
       case Failure(_) => print("fail")
     }
 
+    var phot: Seq[Photo] = Seq[Photo]()
+    photoRepository.list.onComplete {
+      case Success(ph) => phot = ph
+      case Failure(_) => print("fail")
+    }
+
     updateProductForm.bindFromRequest.fold(
       errorForm => {
         Future.successful(
@@ -91,7 +100,7 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
         )
       },
       product => {
-        productsRepo.update(product.id, Product(product.id, product.name, product.description, product.category, product.price, product.quantity
+        productsRepo.update(product.id, Product(product.id, product.name, product.description, product.photo, product.category, product.price, product.quantity
         )).map { _ =>
           Redirect(routes.HomeController.updateProduct(product.id)).flashing("success" -> "product updated")
         }
@@ -102,8 +111,9 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
 
 
   def addProduct: Action[AnyContent] = Action.async { implicit request: MessagesRequest[AnyContent] =>
-    val categories = categoryRepo.list()
-    categories.map(cat => Ok(views.html.product.productadd(productForm, cat)))
+    val categories = Await.result(categoryRepo.list(), Duration.Inf)
+    val photos = Await.result(photoRepository.list, Duration.Inf)
+    Future.successful(Ok(views.html.product.productadd(productForm, categories, photos)))
   }
 
   def addProductHandle = Action.async { implicit request =>
@@ -113,14 +123,20 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
       case Failure(_) => print("fail")
     }
 
+    var phot: Seq[Photo] = Seq[Photo]()
+    photoRepository.list.onComplete {
+      case Success(ph) => phot = ph
+      case Failure(_) => print("fail")
+    }
+
     productForm.bindFromRequest.fold(
       errorForm => {
         Future.successful(
-          BadRequest(views.html.product.productadd(errorForm, categ))
+          BadRequest(views.html.product.productadd(errorForm, categ, phot))
         )
       },
       product => {
-        productsRepo.create(product.name, product.description, product.category, product.price, product.quantity).map { _ =>
+        productsRepo.create(product.name, product.description, product.photo, product.category, product.price, product.quantity).map { _ =>
           Redirect(routes.HomeController.addProduct()).flashing("success" -> "product.created")
         }
       }
@@ -130,6 +146,6 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
 
 }
 
-case class CreateProductForm(name: String, description: String, category: Int, price: Double, quantity: Int)
+case class CreateProductForm(name: String, description: String, photo: Long, category: Int, price: Double, quantity: Int)
 
-case class UpdateProductForm(id: Long, name: String, description: String, category: Int, price: Double, quantity: Int)
+case class UpdateProductForm(id: Long, name: String, description: String, photo: Long, category: Int, price: Double, quantity: Int)

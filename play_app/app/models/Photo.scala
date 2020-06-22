@@ -3,7 +3,7 @@ package models
 import play.api.libs.json.Json
 import slick.jdbc.SQLiteProfile.api._
 
-case class Photo(id: Long, photo: String, product: Long)
+case class Photo(id: Long, photo: String, link: String)
 
 class PhotoTable(tag: Tag) extends Table[Photo](tag, "photo") {
   val _prod = TableQuery[ProductTable]
@@ -12,11 +12,9 @@ class PhotoTable(tag: Tag) extends Table[Photo](tag, "photo") {
 
   def photo = column[String]("photo")
 
-  def product = column[Long]("product")
+  def link = column[String]("link")
 
-  def productFk = foreignKey("prod_fk", product, _prod)(_.id)
-
-  def * = (id, photo, product) <> ((Photo.apply _).tupled, Photo.unapply)
+  def * = (id, photo, link) <> ((Photo.apply _).tupled, Photo.unapply)
 
 }
 

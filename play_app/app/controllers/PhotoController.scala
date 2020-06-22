@@ -16,7 +16,7 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
   val photoForm: Form[PhotoForm] = Form {
     mapping(
       "photo" -> nonEmptyText,
-      "product" -> longNumber,
+      "link" -> nonEmptyText,
 
     )(PhotoForm.apply)(PhotoForm.unapply)
   }
@@ -25,7 +25,7 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
     mapping(
       "id" -> longNumber,
       "photo" -> nonEmptyText,
-      "product" -> longNumber,
+      "link" -> nonEmptyText,
 
     )(UpdatePhotoForm.apply)(UpdatePhotoForm.unapply)
   }
@@ -49,7 +49,7 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
         )
       },
       photo => {
-        photoRepository.create(photo.photo, photo.product).map { _ =>
+        photoRepository.create(photo.photo, photo.link).map { _ =>
           Redirect(routes.PhotoController.add()).flashing("success" -> "product.created")
         }
       }
@@ -65,23 +65,23 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
 
   def update(photoId: Long) = Action.async { implicit request =>
 
-    var prod: Seq[Product] = Seq[Product]()
-    productRepository.list().onComplete {
+    var prod: Seq[Photo] = Seq[Photo]()
+    photoRepository.list.onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
     }
 
     val photo = photoRepository.getById(photoId)
     photo.map(ph => {
-      val phForm = updatephotoForm.fill(UpdatePhotoForm(ph.id, ph.photo, ph.product))
+      val phForm = updatephotoForm.fill(UpdatePhotoForm(ph.id, ph.photo, ph.link))
       Ok(views.html.photo.updatephoto(phForm, prod))
     })
   }
 
   def updateHandle = Action.async { implicit request =>
 
-    var prod: Seq[Product] = Seq[Product]()
-    productRepository.list().onComplete {
+    var prod: Seq[Photo] = Seq[Photo]()
+    photoRepository.list.onComplete {
       case Success(cat) => prod = cat
       case Failure(_) => print("fail")
     }
@@ -93,7 +93,7 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
         )
       },
       photo => {
-        photoRepository.update(photo.id, Photo(photo.id, photo.photo, photo.product)).map { _ =>
+        photoRepository.update(photo.id, Photo(photo.id, photo.photo, photo.link)).map { _ =>
           Redirect(routes.PhotoController.update(photo.id)).flashing("success" -> "photo updated")
         }
       }
@@ -118,6 +118,6 @@ class PhotoController @Inject()(photoRepository: PhotoRepository, productReposit
 }
 
 
-case class PhotoForm(photo: String, product: Long)
+case class PhotoForm(photo: String, link: String)
 
-case class UpdatePhotoForm(id: Long, photo: String, product: Long)
+case class UpdatePhotoForm(id: Long, photo: String, link: String)

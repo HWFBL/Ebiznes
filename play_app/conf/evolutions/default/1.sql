@@ -65,14 +65,15 @@ CREATE TABLE IF NOT EXISTS "product" (
  "category" INT NOT NULL,
  "price" DECIMAL(10, 2) NOT NULL,
  "quantity" INTEGER NOT NULL,
+ "photo" INTEGER NOT NULL,
  FOREIGN KEY("category") references category("id")
+ FOREIGN KEY("photo") references photo("id")
 );
 
 CREATE TABLE IF NOT EXISTS "photo" (
  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
  "photo" VARCHAR NOT NULL,
- "product" INTEGER NOT NULL,
- FOREIGN KEY ("product") REFERENCES product("id")
+ "link" VARCHAR NOT NULL
 );
 
 

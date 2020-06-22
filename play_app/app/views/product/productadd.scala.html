@@ -1,4 +1,4 @@
-@(product: Form[CreateProductForm],category: Seq[Category])(implicit request: MessagesRequestHeader, flash: Flash)
+@(product: Form[CreateProductForm],category: Seq[Category], photo: Seq[Photo])(implicit request: MessagesRequestHeader, flash: Flash)
 
 @import helper._
 
@@ -15,6 +15,12 @@
   <select name="category" id="category">
   @for(cat <- category){
     <option value="@cat.id">@cat.name</option>
+  }
+  </select>
+
+  <select name="photo" id="photo">
+  @for(cat <- photo){
+    <option value="@cat.id">@cat.photo</option>
   }
   </select>
 

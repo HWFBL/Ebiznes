@@ -19,13 +19,13 @@ class PhotoRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
 
   val photo = TableQuery[PhotoTable]
 
-  def create(image: String, product: Long): Future[Photo] = db.run {
+  def create(image: String, link: String): Future[Photo] = db.run {
     //    (photo returning photo.map(_.id)) += Photo(0, photo, )
-    (photo.map(k => (k.photo, k.product))
+    (photo.map(k => (k.photo, k.link))
       returning photo.map(_.id)
 
-      into { case ((photo, product), id) => Photo(id, photo, product) }
-      ) += (image, product)
+      into { case ((photo, link), id) => Photo(id, photo, link) }
+      ) += (image, link)
   }
 
   def delete(id: Long): Future[Unit] = db.run(photo.filter(_.id === id).delete).map( _ => ())

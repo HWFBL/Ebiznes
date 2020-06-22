@@ -31,16 +31,16 @@ class ProductRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, cate
    * This is an asynchronous operation, it will return a future of the created person, which can be used to obtain the
    * id for that person.
    */
-  def create(name: String, description: String, category: Int, price: Double, quantity: Int): Future[Product] = db.run {
+  def create(name: String, description: String, photo: Long, category: Int, price: Double, quantity: Int): Future[Product] = db.run {
     // We create a projection of just the name and age columns, since we're not inserting a value for the id column
-    (product.map(p => (p.name, p.description, p.category, p.price, p.quantity ))
+    (product.map(p => (p.name, p.description, p.photo, p.category, p.price, p.quantity ))
       // Now define it to return the id, because we want to know what id was generated for the person
       returning product.map(_.id)
       // And we define a transformation for the returned value, which combines our original parameters with the
       // returned id
-      into { case ((name, description, category, price, quantity), id) => Product(id, name, description, category, price, quantity) }
+      into { case ((name, description, photo, category, price, quantity), id) => Product(id, name, description, photo, category, price, quantity) }
       // And finally, insert the product into the database
-      ) += (name, description, category, price, quantity)
+      ) += (name, description, photo, category, price, quantity)
   }
 
   /**

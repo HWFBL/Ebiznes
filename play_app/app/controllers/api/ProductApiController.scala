@@ -10,7 +10,7 @@ import utils.auth.JwtEnv
 
 import scala.concurrent.ExecutionContext
 
-case class CreateProduct(name: String, description: String, category: Int, price: Double, quantity: Int)
+case class CreateProduct(name: String, description: String, photo: Long, category: Int, price: Double, quantity: Int)
 
 object CreateProduct {
   implicit val formatProduct = Json.format[CreateProduct]
@@ -36,7 +36,7 @@ class ProductApiController @Inject()(productRepository: ProductRepository, silho
         BadRequest(Json.obj("message" -> JsError.toJson(error)))
       },
       product => {
-        productRepository.create(product.name, product.description, product.category, product.price, product.quantity)
+        productRepository.create(product.name, product.description, product.photo, product.category, product.price, product.quantity)
         Ok(Json.obj("message" -> "Product added"))
       }
     )
@@ -51,7 +51,7 @@ class ProductApiController @Inject()(productRepository: ProductRepository, silho
             BadRequest(Json.obj("message" -> JsError.toJson(error)))
           },
           product => {
-            productRepository.update(id, Product(id, product.name, product.description, product.category, product.price, product.quantity))
+            productRepository.update(id, Product(id, product.name, product.description, product.photo, product.category, product.price, product.quantity))
             Ok(Json.obj("message" -> "Product upated"))
           }
         )
