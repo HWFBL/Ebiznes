@@ -123,13 +123,12 @@ class AuthApiController @Inject()(cc: ControllerComponents,
                     _ <- authInfoRepository.add(profile.loginInfo, authInfo)
                     authenticator <- jwtAuthService.create(profile.loginInfo)
                     token <- jwtAuthService.init(authenticator)
-                    result <- jwtAuthService.embed(token, Redirect(s"http://localhost:3000/oauth/google?name=${profile.fullName.getOrElse("")}&token=$token"))
+                    result <- jwtAuthService.embed(token, Redirect(s"http://localhost:3000/login?token=$token"))
                   } yield {
                     result
                   }
                 } else {
-                  val errorCode="XD403" // Email is bounded to other provider
-                  Future.successful(Redirect(s"http://localhost:3000/auth/failure?errorCode=$errorCode"))
+                  Future.successful(Redirect(s"http://localhost:3000/login?status=error"))
                 }
               }
             }
@@ -141,6 +140,7 @@ class AuthApiController @Inject()(cc: ControllerComponents,
     }).recover {
       case e: ProviderException => {
         val errorCode = "XD500" // Unknown error
+        println(e)
         Redirect(s"http://localhost:3000/auth/failure?errorCode=$errorCode")
       }
     }
