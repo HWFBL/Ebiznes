@@ -25,6 +25,21 @@ class CategoryRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(im
       ) += (name)
   }
 
+  def getById(id: Int): Future[Category] = db.run {
+    category.filter(_.id === id).result.head
+  }
+
+  def getByIdOption(id: Int): Future[Option[Category]] = db.run {
+    category.filter(_.id === id).result.headOption
+  }
+
+  def update(id: Int, newCategory: Category): Future[Unit] = {
+    val comToUpdate: Category = newCategory.copy(id)
+    db.run(category.filter(_.id === id).update(comToUpdate)).map(_ => ())
+  }
+
+  def delete(id: Int): Future[Unit] = db.run(category.filter(_.id === id).delete).map( _ => ())
+
   def list(): Future[Seq[Category]] = db.run {
     category.result
   }

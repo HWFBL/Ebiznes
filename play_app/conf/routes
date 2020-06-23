@@ -57,6 +57,12 @@ POST          /api/ratings                         controllers.api.RatingApiCont
 PUT           /api/ratings/:ratingId               controllers.api.RatingApiController.update(ratingId: Long)
 DELETE        /api/ratings/:ratingId               controllers.api.RatingApiController.delete(ratingId: Long)
 
+GET           /api/category                        controllers.api.CategoryApiController.getAll
+GET           /api/category/:categoryId            controllers.api.CategoryApiController.get(categoryId: Int)
+POST          /api/category                        controllers.api.CategoryApiController.add
+PUT           /api/category/:categoryId            controllers.api.CategoryApiController.update(categoryId: Int)
+DELETE        /api/category/:categoryId            controllers.api.CategoryApiController.delete(categoryId: Int)
+
 GET           /api/shippings                       controllers.api.ShippingApiController.getAll
 GET           /api/shippings/:shippingId           controllers.api.ShippingApiController.get(shippingId: Long)
 POST          /api/shippings                       controllers.api.ShippingApiController.add
