@@ -8,6 +8,8 @@ import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import {Link, useHistory} from "react-router-dom";
 import {AppContext} from "../utils/AppContext/AppContext";
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,12 +48,12 @@ export default function BaseLayout({children}) {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
-                        News
+                      MójSklep
                     </Typography>
                     <Button color="inherit" component={Link} to="/">Home</Button>
-                    <Button color="inherit" component={Link} to="/categories">Categories</Button>
+                    <Button color="inherit" component={Link} to="/categories">Kategorie</Button>
                     <Button color="inherit" component={Link} to="/profile">Profile (debug page)</Button>
-                    <Button color="inherit" component={Link} to="/basket">Basket ({getBasketItems.length})</Button>
+                    <Button color="inherit" component={Link} to="/basket">Koszyk <AddShoppingCartIcon/> ({getBasketItems.length})</Button>
                     { getUser ? <Button color="inherit" onClick={logoutHandler}>SIGN OUT</Button> : <Button color="inherit" component={Link} to="/login">LOGIN</Button>}
                 </Toolbar>
             </AppBar>
