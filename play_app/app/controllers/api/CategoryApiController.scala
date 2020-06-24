@@ -30,7 +30,7 @@ class CategoryApiController @Inject()(productRepository: ProductRepository, rati
   }
 
 
-  def add = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Customer)) { implicit request =>
+  def add = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)) { implicit request =>
     val body = request.body.asJson.get
     body.validate[CreateCategory].fold(
       error => {
@@ -43,7 +43,7 @@ class CategoryApiController @Inject()(productRepository: ProductRepository, rati
     )
   }
 
-  def update(id: Int) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Customer)).async(parse.json) {implicit request =>
+  def update(id: Int) = silhouette.SecuredAction(RoleJWTAuthorization(UserRoles.Admin)).async(parse.json) {implicit request =>
     categoryRepository.getByIdOption(id) map {
       case Some(c) => {
         val body = request.body
