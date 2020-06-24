@@ -28,6 +28,12 @@ class ProductApiController @Inject()(productRepository: ProductRepository, silho
     }
   }
 
+  def getByCategory(id: Int) = Action.async { implicit request =>
+    val products = productRepository.getByCategory(id)
+  products.map(p => Ok(Json.toJson(p)))
+
+  }
+
 
   def add = Action(parse.json) { implicit request =>
     val body = request.body

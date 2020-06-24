@@ -71,12 +71,17 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
       case Failure(_) => print("fail")
     }
 
+    var phot: Seq[Photo] = Seq[Photo]()
+    photoRepository.list.onComplete {
+      case Success(p) => phot = p
+      case Failure(_) => print("fail")
+    }
     val produkt = productsRepo.getById(id)
     produkt.map(product => {
       val prodForm = updateProductForm.fill(UpdateProductForm(product.id, product.name, product.description, product.photo, product.category, product.price, product.quantity))
       //  id, product.name, product.description, product.category)
       //updateProductForm.fill(prodForm)
-      Ok(views.html.product.productupdate(prodForm, categ))
+      Ok(views.html.product.productupdate(prodForm, categ, phot))
     })
   }
 
@@ -96,7 +101,7 @@ class HomeController @Inject()(productsRepo: ProductRepository, categoryRepo: Ca
     updateProductForm.bindFromRequest.fold(
       errorForm => {
         Future.successful(
-          BadRequest(views.html.product.productupdate(errorForm, categ))
+          BadRequest(views.html.product.productupdate(errorForm, categ, phot))
         )
       },
       product => {
