@@ -27,19 +27,7 @@ class CustomerApiController @Inject()(customerRepo: CustomerRepository, cc: Mess
     }
   }
 
-//
-//  def add = Action(parse.json) { implicit request =>
-//    val body = request.body
-//    body.validate[CreateCustomer].fold(
-//      error => {
-//        BadRequest(Json.obj("message" -> JsError.toJson(error)))
-//      },
-//      customer => {
-//        customerRepo.create(customer.forename, customer.name, customer.email)
-//        Ok(Json.obj("message" -> "Customer added"))
-//      }
-//    )
-//  }
+
 
   def update(id: Long) = Action.async(parse.json) {implicit request =>
     customerRepo.getByIdOption(id) map {
