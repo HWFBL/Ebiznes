@@ -11,7 +11,7 @@ class OrderItemTable(tag: Tag) extends Table[OrderItem](tag, "orderItem") {
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-  def orderId = column[Long]("orderId")
+  def orderId = column[Long]("order_id")
 
   def payment = column[Long]("payment")
 

@@ -66,6 +66,10 @@ class ProductRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, cate
     product.filter(_.category inSet categoryIds).result
   }
 
+  def getByIds(ids: List[Long]): Future[Seq[Product]] = db.run {
+    product.filter(_.id inSet ids).result
+  }
+
   def delete(id: Long): Future[Unit] = db.run(product.filter(_.id === id).delete).map(_ => ())
 
   def update(id: Long, newProduct: Product): Future[Unit] = {

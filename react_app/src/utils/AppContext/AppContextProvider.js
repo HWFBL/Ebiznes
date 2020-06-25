@@ -7,10 +7,12 @@ const cacheBasketContext = JSON.parse(localStorage.getItem('app_basket_context')
 export default function AppContextProvider({children}) {
     const [_userContext, _setUserContext] = useState(cacheUserContext || { user: null, token: null });
     const [_basketContext, _setBasketContext] = useState(cacheBasketContext || { items: [] });
+    const [totalprice, setTotalprice] = useState(0)
 
     const getToken = _userContext.token;
     const getUser = _userContext.user;
     const getBasketItems = _basketContext.items;
+    const getTotalPrice = totalprice
 
     const setUserContext = (token, user) => {
         const temp = { token, user };
@@ -34,6 +36,10 @@ export default function AppContextProvider({children}) {
         }
     };
 
+    const setPrice = price => {
+        setTotalprice(price)
+    }
+
     const removeProductFromBasket = (product_id) => {
         if (_basketContext.items.includes(product_id)) {
             const items = [..._basketContext.items];
@@ -51,7 +57,7 @@ export default function AppContextProvider({children}) {
 
 
     return (
-        <AppContext.Provider value={{getToken, getUser, getBasketItems, setUserContext, addProductToBasket, removeProductFromBasket, removeAllProductsFromBasket}}>
+        <AppContext.Provider value={{getToken, getUser, getBasketItems, getTotalPrice, setPrice, setUserContext, addProductToBasket, removeProductFromBasket, removeAllProductsFromBasket}}>
             {children}
         </AppContext.Provider>
     )

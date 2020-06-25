@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import BaseLayout from "../layouts/BaseLayout";
 import {useParams} from "react-router-dom";
 import axios from 'axios';
-import {getData} from "../functions/FetchData";
 import ProductListItem from "../components/products/ProductListItem";
 import Grid from "@material-ui/core/Grid";
 

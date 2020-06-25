@@ -152,8 +152,8 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
       authorizationURL = Option("https://accounts.google.com/o/oauth2/auth"),
       accessTokenURL = "https://accounts.google.com/o/oauth2/token",
       redirectURL=Option("http://localhost:9000/api/auth/oauth/google"),
-      clientID="",
-      clientSecret="",
+      clientID="158074163261-mffpub2nbchnqehdh6jheu99ci8rqvjr.apps.googleusercontent.com",
+      clientSecret="TIflbA1-8y7FKa4BhH5jqWAy",
       scope=Option("profile email")
     )
     new GoogleProvider(httpLayer, socialStateHandler, config)

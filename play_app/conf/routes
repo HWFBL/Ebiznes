@@ -29,6 +29,7 @@ DELETE        /api/orders/:orderId                      controllers.api.OrderApi
 
 GET           /api/orderItem                            controllers.api.OrderItemApiController.getAll
 GET           /api/orderItem/:orderItemId               controllers.api.OrderItemApiController.get(orderItemId: Long)
+GET           /api/orderItem/name/:name                 controllers.api.OrderItemApiController.getByName(name: String)
 POST          /api/orderItem                            controllers.api.OrderItemApiController.add
 PUT           /api/orderItem/:orderItemId               controllers.api.OrderItemApiController.update(orderItemId: Long)
 DELETE        /api/orderItem/:orderItemId               controllers.api.OrderItemApiController.delete(orderItemId: Long)

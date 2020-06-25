@@ -30,6 +30,10 @@ class OrderItemRepository  @Inject()(dbConfigProvider: DatabaseConfigProvider, o
        ord_it.filter(_.id === id).result.head
      }
 
+  def getByName(id: String): Future[OrderItem] = db.run {
+    ord_it.filter(_.dispute === id).result.head
+  }
+
      def getByIdOption(id: Long): Future[Option[OrderItem]] = db.run {
        ord_it.filter(_.id === id).result.headOption
      }

@@ -26,6 +26,10 @@ class OrderItemApiController @Inject()(orderItemRepository: OrderItemRepository,
     }
   }
 
+  def getByName(name: String) = Action.async { implicit request =>
+    val orders = orderItemRepository.getByName(name)
+    orders.map (ord => Ok(Json.toJson(ord)))
+  }
 
   def add = Action(parse.json) { implicit request =>
     val body = request.body

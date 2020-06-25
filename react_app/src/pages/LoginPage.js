@@ -15,10 +15,11 @@ export default function LoginPage() {
 
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
+    const [backmessage, setBackmessage] = useState(null);
 
     const loginHandler = async (token) => {
         try {
-            let res = await axios.get('/auth/me', { headers: { 'X-Auth-Token': token}});
+            let res = await axios.get('/auth/me', { headers: { 'X-Auth-Token': token}}  );
             const me = res.data
 
             const user = {
@@ -27,7 +28,7 @@ export default function LoginPage() {
                 email: me.email
             }; // getUser from API call
             setUserContext(token, user);
-         setTimeout(() =>   history.push('/'), 1000)
+         setTimeout(() =>   history.push('/'), 500)
         } catch (e) {
             alert('Wystapil problem');
             console.error(e);
@@ -93,6 +94,7 @@ export default function LoginPage() {
                         value={password}
                         onChange={e => setPassword(e.target.value)}/>
                 </Grid>
+
             </Grid>
             <Box display="flex" flexDirection="row" py={3}>
                 <Box flexGrow={1}>
