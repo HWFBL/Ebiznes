@@ -50,6 +50,7 @@ export default function BaseLayout({children}) {
                     <Typography variant="h6" className={classes.title}>
                       MójSklep
                     </Typography>
+
                     <Button color="inherit" component={Link} to="/">Home</Button>
                     <Button color="inherit" component={Link} to="/categories">Kategorie</Button>
                     <Button color="inherit" component={Link} to="/profile">Profile (debug page)</Button>
