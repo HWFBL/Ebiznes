@@ -15,7 +15,7 @@ case class Customer(id: Long, forename: String, name: String, email: String, rol
 
 class CustomerTable(tag: Tag) extends Table[Customer](tag, "customer") {
 
-  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def id = column[Long]("id", O.PrimaryKey)
   def forename = column[String]("forename")
   def name = column[String]("name")
   def email = column[String]("email")

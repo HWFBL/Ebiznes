@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import AuthLayout from "../layouts/AuthLayout";
 import Button from "@material-ui/core/Button";
 import {Link, useHistory} from "react-router-dom";
@@ -6,6 +6,9 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import {AppContext} from "../utils/AppContext/AppContext";
+import queryString from 'query-string';
+import axios from 'axios';
+import GoogleButton from "react-google-button";
 
 export default function LoginPage() {
     const { setUserContext } = useContext(AppContext);
@@ -13,35 +16,64 @@ export default function LoginPage() {
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
 
-    let history = useHistory();
-
-    const loginSubmit = async () => {
+    const loginHandler = async (token) => {
         try {
-            const token = 'sample token'; // getToken from API call
-            // example:
-            // let res = await axios.post('/auth/login', { email, password });
-            // const token = res.data
-            // res = await axios.get('/auth/me', { headers: { 'X-Auth-Token': token}});
-            // const me = res.data
+            let res = await axios.get('/auth/me', { headers: { 'X-Auth-Token': token}});
+            const me = res.data
 
             const user = {
-                firstName: 'Tomasz',
-                lastName: 'Nowak',
-                email: 'tnowak@gmail.com'
+                firstName: me.forename,
+                lastName: me.name,
+                email: me.email
             }; // getUser from API call
             setUserContext(token, user);
-            setTimeout(() => history.push('/'), 2000);
+         setTimeout(() =>   history.push('/'), 1000)
         } catch (e) {
             alert('Wystapil problem');
             console.error(e);
         }
     };
 
+    let history = useHistory();
+
+    useEffect(() => {
+       const tryLogin = async () => {
+           if (history && history.location && history.location.search) {
+               let params = queryString.parse(history.location.search);
+               if (params.token) {
+                   await loginHandler(params.token);
+               }
+           }
+       };
+
+       tryLogin()
+    }, []);
+
+
+    const loginSubmit = async () => {
+
+        let res = await axios.post('/auth/signin', { email, password });
+        const token = res.data.token
+
+        await loginHandler(token)
+    };
+
     return (
         <AuthLayout>
             <h2>LOGIN</h2>
+
             <Grid container spacing={2}>
+
+              <Box mx={"auto"}>
+                  <GoogleButton
+                      onClick={() => {
+                          window.location.href="http://localhost:9000/api/auth/oauth/google"
+                      }}
+                  />
+              </Box>
+
                 <Grid item xs={12} >
+
                     <TextField
                         fullWidth
                         label="E-mail"

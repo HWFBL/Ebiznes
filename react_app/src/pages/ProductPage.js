@@ -54,8 +54,12 @@ export default function ProductPage() {
             {product.description}
         </Typography>
         <Box mt={4}>
-            <Button variant="contained" color="primary" onClick={() => addProductToBasket('1')}>Dodaj do koszyka</Button>
-
+            <Button variant="contained" color="primary" onClick={() => addProductToBasket(productId)}>Dodaj do koszyka</Button>
+    <Box mt={3}>
+        <Typography  variant={"h5"}>
+            {product.price} PLN
+        </Typography>
+    </Box>
         </Box>
 
     </Grid>
