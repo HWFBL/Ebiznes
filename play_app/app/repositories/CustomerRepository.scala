@@ -51,22 +51,6 @@ class CustomerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, pas
   }
 
 
-//  def create(name: String, forename: String, email: String, password: String) = {
-//    val id = UUID.randomUUID().getMostSignificantBits() & Long.MaxValue
-//    db.run {
-//
-//   customer.insertOrUpdate(Customer(id, forename, name, email, email))
-//
-//    }  andThen {
-//      case Failure(_: Throwable) => None
-//      case Success(_) => {
-//        val loginInfo: LoginInfo = LoginInfo(CredentialsProvider.ID, email)
-//        val authInfo: PasswordInfo = passwordHasher.hash(password)
-//        authInfoRepository.add(loginInfo, authInfo)
-//      }
-//    } map { _id => LoginInfo(CredentialsProvider.ID, email) }
-//  }
-
   def getByIdOption(id: Long): Future[Option[Customer]] = db.run {
     customer.filter(_.id === id).result.headOption
   }
@@ -84,7 +68,6 @@ class CustomerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider, pas
   }
 
   def delete(id: Long): Future[Unit] = db.run {
-  val cust: Customer = Await.result(getByIdOption(id), Duration.Inf).get
     customer.filter(_.id === id).delete.map(_ => ())
   }
 
