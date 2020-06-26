@@ -1,9 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import BaseLayout from "../layouts/BaseLayout";
 import {AppContext} from "../utils/AppContext/AppContext";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Button from "@material-ui/core/Button";
-import Toolbar from "@material-ui/core/Toolbar";
 import axios from "axios";
 
 export default function ProfilePage() {

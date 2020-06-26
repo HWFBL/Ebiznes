@@ -53,7 +53,7 @@ export default function BasketPage() {
             orderId: total, payment: total, dispute: getUser.firstName, status: 'dds'
         }
 
-        const res = await axios.post('/orderItem', pars )
+        axios.post('/orderItem', pars )
     }
 
     return (

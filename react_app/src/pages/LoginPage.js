@@ -15,7 +15,6 @@ export default function LoginPage() {
 
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [backmessage, setBackmessage] = useState(null);
 
     const loginHandler = async (token) => {
         try {

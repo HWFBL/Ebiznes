@@ -6,12 +6,9 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import CardHeader from "@material-ui/core/CardHeader";
 import IconButton from "@material-ui/core/IconButton";
-import CardMedia from '@material-ui/core/CardMedia';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import {AppContext} from "../../utils/AppContext/AppContext";
-import InfoIcon from '@material-ui/icons/Info';
-import Button from "@material-ui/core/Button";
-import Box from "@material-ui/core/Box";
+
 import {Link as RouterLink} from "react-router-dom";
 import Link from "@material-ui/core/Link";
 import axios from 'axios';

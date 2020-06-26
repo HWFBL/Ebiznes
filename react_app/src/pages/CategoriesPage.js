@@ -1,12 +1,8 @@
 import React, {useEffect, useState} from "react";
 import BaseLayout from "../layouts/BaseLayout";
-import ProductListItem from "../components/products/ProductListItem";
-
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
 import {Link as RouterLink } from "react-router-dom";
 import Link from "@material-ui/core/Link";
 import axios from "axios";

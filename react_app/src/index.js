@@ -9,7 +9,6 @@ import {ThemeProvider} from '@material-ui/core/styles';
 import theme from "./theme";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import TodoPage from "./pages/TodoPage";
 import AppContextProvider from "./utils/AppContext/AppContextProvider";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFound";
